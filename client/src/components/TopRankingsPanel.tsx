@@ -13,9 +13,14 @@ export default function TopRankingsPanel({ pools, isVisible, onSelectPool }: Top
 
   if (!isVisible || !pools) return null;
   
-  // Sort pools by rank (ascending)
+  // Sort pools by rank (ascending), handle null or undefined ranks
   const topPools = [...pools]
-    .sort((a, b) => a.rank - b.rank)
+    .sort((a, b) => {
+      // If either rank is null/undefined, use default values
+      const rankA = a.rank ?? Number.MAX_SAFE_INTEGER;
+      const rankB = b.rank ?? Number.MAX_SAFE_INTEGER;
+      return rankA - rankB;
+    })
     .slice(0, 10);
     
   // Determine API status indicator color
@@ -112,7 +117,12 @@ export default function TopRankingsPanel({ pools, isVisible, onSelectPool }: Top
   );
 }
 
-function getRankDisplay(rank: number): JSX.Element {
+function getRankDisplay(rank: number | null): JSX.Element {
+  // If rank is null or undefined, display a placeholder
+  if (rank === null || rank === undefined) {
+    return <span className="text-gray-500">--</span>;
+  }
+  
   if (rank === 1) {
     return <span className="text-yellow-400 font-bold">#{rank}</span>;
   } else if (rank === 2) {

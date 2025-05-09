@@ -260,17 +260,32 @@ export default function SidePanel({ isOpen, pool, onClose }: SidePanelProps) {
                     
                     {/* Simple chart representation with bars */}
                     <div className="h-24 flex items-end justify-between">
-                      {pool.hashHistory.map((value, index) => {
-                        const maxValue = Math.max(...pool.hashHistory);
-                        const height = `${(value / maxValue) * 100}%`;
-                        return (
+                      {(pool.hashHistory && pool.hashHistory.length > 0) ? (
+                        // If we have history data, show the bars
+                        pool.hashHistory.map((value, index) => {
+                          // Find the maximum value for scaling
+                          const maxValue = Math.max(...pool.hashHistory || [1]);
+                          // Calculate height as percentage
+                          const height = `${(value / maxValue) * 100}%`;
+                          
+                          return (
+                            <div 
+                              key={index} 
+                              className="w-[12%] bg-[#00f3ff] bg-opacity-40 hover:bg-opacity-60 transition-all rounded-t" 
+                              style={{ height }}
+                            ></div>
+                          );
+                        })
+                      ) : (
+                        // If no history data, show empty placeholder bars
+                        Array(7).fill(0).map((_, index) => (
                           <div 
                             key={index} 
-                            className="w-[12%] bg-[#00f3ff] bg-opacity-40 hover:bg-opacity-60 transition-all rounded-t" 
-                            style={{ height }}
+                            className="w-[12%] bg-gray-800 bg-opacity-40 rounded-t"
+                            style={{ height: '10%' }}
                           ></div>
-                        );
-                      })}
+                        ))
+                      )}
                     </div>
                     
                     <div className="flex justify-between mt-2 text-xs text-gray-500 font-jetbrains">

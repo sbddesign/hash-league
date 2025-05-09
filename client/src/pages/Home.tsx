@@ -175,6 +175,9 @@ export default function Home() {
       let total = 0;
       
       displayPools.forEach(pool => {
+        // Skip pools with null or undefined hashrate
+        if (!pool.hashrate) return;
+        
         // Extract numeric value from hashrate string
         const match = pool.hashrate.match(/^([\d.]+)/);
         if (match) {

@@ -261,13 +261,15 @@ export const updateAllPools = async (pools: MiningPool[]): Promise<MiningPool[]>
     // Sort pools by hashrate (descending) to update rankings
     const sortedPools = [...allPoolsUpdated].sort((a, b) => {
       // Extract numeric value from hashrate string
-      const getNumericHashrate = (hashrate: string) => {
+      const getNumericHashrate = (hashrate: string | null) => {
+        if (!hashrate) return 0;
         const match = hashrate.match(/^([\d.]+)/);
         return match ? parseFloat(match[1]) : 0;
       };
       
       // Extract hashrate unit for comparison
-      const getHashrateUnit = (hashrate: string) => {
+      const getHashrateUnit = (hashrate: string | null) => {
+        if (!hashrate) return 'H/s';
         const match = hashrate.match(/(H\/s|KH\/s|MH\/s|GH\/s|TH\/s|PH\/s|EH\/s)$/);
         return match ? match[1] : 'H/s';
       };
