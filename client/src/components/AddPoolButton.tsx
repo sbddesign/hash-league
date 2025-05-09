@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 
 export default function AddPoolButton() {
   const handleClick = () => {
-    window.open('https://github.com/hashleague/mining-pools/issues/new?template=add-pool.md', '_blank');
+    window.open('https://github.com/sbddesign/hash-league/issues/new?template=add-pool.md', '_blank');
   };
 
   return (

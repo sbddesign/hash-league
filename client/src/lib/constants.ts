@@ -1,7 +1,7 @@
 // This file contains constants used throughout the application
 
 // GitHub repository URL for adding new pools
-export const GITHUB_ISSUE_URL = 'https://github.com/hashleague/mining-pools/issues/new?template=add-pool.md';
+export const GITHUB_ISSUE_URL = 'https://github.com/sbddesign/hash-league/issues/new?template=add-pool.md';
 
 // Map configuration constants
 export const MAP_CONFIG = {
