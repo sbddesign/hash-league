@@ -202,7 +202,7 @@ export default function MapVisualization({
             <span>Live Mining Pool</span>
           </div>
           <div className="flex items-center">
-            <span className="w-3 h-3 rounded-full bg-[#FFD700] mr-2" style={{ boxShadow: '0 0 5px #FFD700' }}></span>
+            <span className="w-3 h-3 rounded-full bg-[#00f3ff] mr-2" style={{ boxShadow: '0 0 5px #00f3ff' }}></span>
             <span>Unclaimed Territory</span>
           </div>
         </div>
