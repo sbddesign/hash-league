@@ -6,14 +6,10 @@ import SidePanel from '@/components/SidePanel';
 import AddPoolButton from '@/components/AddPoolButton';
 import { MiningPool } from '@shared/schema';
 
-// Ensure Leaflet is available globally
+// Import Leaflet for map functionality
 import L from 'leaflet';
-declare global {
-  interface Window {
-    L: any;
-  }
-}
-window.L = L;
+// Import Leaflet CSS file - this is necessary for the map to display properly
+import 'leaflet/dist/leaflet.css';
 
 export default function Home() {
   const [selectedPool, setSelectedPool] = useState<MiningPool | null>(null);
@@ -54,7 +50,7 @@ export default function Home() {
       />
       
       {/* Main Content */}
-      <main className="relative h-screen">
+      <main className="relative w-full h-screen overflow-hidden">
         {/* Map */}
         <MapVisualization 
           isLoading={isLoading} 

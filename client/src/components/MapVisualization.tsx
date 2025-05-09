@@ -26,24 +26,40 @@ export default function MapVisualization({
   useEffect(() => {
     // Initialize map
     if (mapRef.current && !leafletMap.current) {
-      leafletMap.current = L.map(mapRef.current, {
-        center: [20, 0],
-        zoom: 2,
-        minZoom: 2,
-        maxZoom: 10,
-        zoomControl: false,
-        attributionControl: false,
-      });
-
-      // Add dark mode tile layer
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(leafletMap.current);
-
-      // Add zoom control in the bottom left
-      L.control.zoom({
-        position: 'bottomleft'
-      }).addTo(leafletMap.current);
+      // Wait a bit for the DOM to be ready
+      setTimeout(() => {
+        try {
+          console.log("Initializing map...");
+          leafletMap.current = L.map(mapRef.current, {
+            center: [20, 0],
+            zoom: 2,
+            minZoom: 2,
+            maxZoom: 10,
+            zoomControl: false,
+            attributionControl: false,
+          });
+    
+          // Add dark mode tile layer
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          }).addTo(leafletMap.current);
+    
+          // Add zoom control in the bottom left
+          L.control.zoom({
+            position: 'bottomleft'
+          }).addTo(leafletMap.current);
+          
+          // Force a resize to ensure the map fills the container
+          setTimeout(() => {
+            if (leafletMap.current) {
+              console.log("Invalidating map size...");
+              leafletMap.current.invalidateSize();
+            }
+          }, 100);
+        } catch (error) {
+          console.error("Error initializing map:", error);
+        }
+      }, 100);
     }
 
     return () => {
@@ -135,7 +151,7 @@ export default function MapVisualization({
 
   return (
     <div className="map-container">
-      <div id="map" ref={mapRef} className="z-10 h-full w-full"></div>
+      <div id="map" ref={mapRef} className="z-10 h-full w-full absolute inset-0"></div>
       
       {/* Legend */}
       <div className="absolute bottom-5 left-5 z-20 bg-black bg-opacity-70 backdrop-blur-sm p-3 rounded-lg border-glow-blue text-xs font-jetbrains hidden md:block">
