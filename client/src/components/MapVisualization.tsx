@@ -58,8 +58,9 @@ export default function MapVisualization({
           const existingControls = document.querySelectorAll('.leaflet-control-zoom');
           existingControls.forEach(el => el.remove());
           
-          // Add new zoom control
-          const zoomControl = new L.Control.Zoom({
+          // Create a custom position for zoom controls below the header
+          // Add new zoom control with custom position
+          const zoomControl = L.control.zoom({
             position: 'topright',
             zoomInTitle: 'Zoom in',
             zoomOutTitle: 'Zoom out'

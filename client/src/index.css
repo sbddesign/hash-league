@@ -188,7 +188,7 @@
     border: 1px solid #00f3ff !important;
     background-color: rgba(0, 0, 0, 0.8) !important;
     box-shadow: 0 0 10px rgba(0, 243, 255, 0.5) !important;
-    margin: 10px !important;
+    margin: 70px 10px 10px 10px !important; /* Top, Right, Bottom, Left - add top margin to clear header */
     z-index: 1000 !important;
   }
   
