@@ -171,7 +171,10 @@ export default function MapVisualization({
                   <div style="color: white; font-size: 12px;">${pool.city}, ${pool.country}</div>
                 </div>
               `, {
-                className: 'custom-popup'
+                className: 'custom-popup',
+                closeButton: true,
+                autoClose: false,    // Prevent auto-closing when clicking elsewhere
+                closeOnEscapeKey: true
               });
               
               markers.current[pool.id] = marker;
@@ -190,24 +193,68 @@ export default function MapVisualization({
   // Update map view when a pool is selected and open its popup
   useEffect(() => {
     if (leafletMap.current && selectedPool) {
+      // Track whether the animation is complete
+      let animationComplete = false;
+      
+      // Close any existing popups
+      leafletMap.current.closePopup();
+      
+      // Get the marker for the selected pool
+      const marker = markers.current[selectedPool.id];
+      if (!marker) return;
+      
+      // Define a function to handle popup opening to ensure consistent behavior
+      const openPopupSafely = () => {
+        if (!leafletMap.current || !marker) return;
+        
+        try {
+          // Unbind the current popup
+          marker.unbindPopup();
+          
+          // Create a new popup with the same content
+          const isTestPool = 'testData' in selectedPool && selectedPool.testData !== null;
+          const popupColor = isTestPool ? '#00f3ff' : '#ff00ea';
+          
+          // Rebind the popup with same content
+          marker.bindPopup(`
+            <div style="text-align: center;">
+              <div style="font-weight: bold; color: ${popupColor};">${selectedPool.name}</div>
+              <div style="color: white; font-size: 12px;">${selectedPool.city}, ${selectedPool.country}</div>
+            </div>
+          `, {
+            className: 'custom-popup',
+            closeButton: true,
+            autoClose: false,    // Prevent auto-closing when clicking elsewhere
+            closeOnEscapeKey: true
+          });
+          
+          // Open the popup
+          marker.openPopup();
+        } catch (error) {
+          console.error("Error opening popup:", error);
+        }
+      };
+      
       // Center the map on the selected pool
+      leafletMap.current.once('moveend', () => {
+        animationComplete = true;
+        // Open popup after animation has completed
+        openPopupSafely();
+      });
+      
+      // Start the map panning
       leafletMap.current.setView(
         [selectedPool.latitude, selectedPool.longitude], 
         5, 
-        { animate: true }
+        { animate: true, duration: 0.5 }
       );
       
-      // Open the popup for the selected pool
-      const marker = markers.current[selectedPool.id];
-      if (marker) {
-        // Close any other open popups first
-        leafletMap.current.closePopup();
-        
-        // Open this marker's popup
-        setTimeout(() => {
-          marker.openPopup();
-        }, 300); // Small delay to ensure map has finished panning
-      }
+      // Fallback to ensure popup opens even if moveend doesn't fire
+      setTimeout(() => {
+        if (!animationComplete) {
+          openPopupSafely();
+        }
+      }, 600);
     }
   }, [selectedPool]);
 

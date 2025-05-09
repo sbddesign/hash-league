@@ -77,9 +77,11 @@ export class MemStorage implements IStorage {
       lastUpdated: insertPool.lastUpdated || null,
       isActive: insertPool.isActive === undefined ? true : insertPool.isActive,
       poolApiUrl: insertPool.poolApiUrl || null,
-      hashrate: insertPool.hashrate || '0 H/s',
+      hashrate: insertPool.hashrate || "0 H/s",
       workers: insertPool.workers || 0,
-      hashHistory: insertPool.hashHistory ? [...insertPool.hashHistory] : [0,0,0,0,0,0,0],
+      hashHistory: insertPool.hashHistory
+        ? [...insertPool.hashHistory]
+        : [0, 0, 0, 0, 0, 0, 0],
       testData: insertPool.testData || null,
       rank: insertPool.rank || 0,
     };
@@ -133,21 +135,18 @@ export class MemStorage implements IStorage {
           ? updates.hashrate
           : currentPool.hashrate,
       workers:
-        updates.workers !== undefined
-          ? updates.workers
-          : currentPool.workers,
+        updates.workers !== undefined ? updates.workers : currentPool.workers,
       hashHistory:
         updates.hashHistory !== undefined
           ? [...updates.hashHistory]
-          : (currentPool.hashHistory ? [...currentPool.hashHistory] : [0,0,0,0,0,0,0]),
+          : currentPool.hashHistory
+            ? [...currentPool.hashHistory]
+            : [0, 0, 0, 0, 0, 0, 0],
       testData:
         updates.testData !== undefined
           ? updates.testData
           : currentPool.testData,
-      rank:
-        updates.rank !== undefined
-          ? updates.rank
-          : currentPool.rank,
+      rank: updates.rank !== undefined ? updates.rank : currentPool.rank,
     };
 
     // Update the pool in storage
@@ -182,7 +181,7 @@ export class MemStorage implements IStorage {
         latitude: 33.749,
         longitude: -84.388,
         description:
-          "The premier Bitcoin mining collective in the southeastern United States, founded by the Atlanta Bitcoin community. We operate with a focus on renewable energy and community education.",
+          "ATL BitLab's strategic hashrate deployment squadron. Atlanta plebs unite!",
         avatar: "/atl-hash-force.jpg",
         website: "https://atlhashforce.org",
         twitter: "https://twitter.com/atlhashforce",
@@ -311,8 +310,8 @@ export class MemStorage implements IStorage {
         name: "Berlin Community",
         country: "Germany",
         city: "Berlin",
-        latitude: 52.5200,
-        longitude: 13.4050,
+        latitude: 52.52,
+        longitude: 13.405,
         description: "Ach, wo ist mein hashrate?",
         avatar: "/bitcoin-blue.png",
         createdAt: "2024-10-01 00:00:00",
