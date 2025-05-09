@@ -23,33 +23,7 @@ export default function MapVisualization({
   const leafletMap = useRef<L.Map | null>(null);
   const markers = useRef<{[key: number]: any}>({});
 
-  // Add direct style injection to override any caching
   useEffect(() => {
-    const injectMapStyle = () => {
-      const styleId = 'map-custom-style';
-      if (!document.getElementById(styleId)) {
-        const style = document.createElement('style');
-        style.id = styleId;
-        style.innerHTML = `
-          .leaflet-container { background: #121212 !important; }
-          .leaflet-tile-pane { filter: none !important; }
-          .leaflet-container .leaflet-tile-pane .leaflet-layer text, 
-          .leaflet-container .leaflet-pane text {
-            font-weight: 600 !important;
-            fill: #ffffff !important;
-            color: #ffffff !important;
-            text-shadow: 0 0 2px #000 !important;
-            filter: brightness(1.2) drop-shadow(0px 0px 1px rgba(0, 0, 0, 0.8));
-          }
-        `;
-        document.head.appendChild(style);
-        console.log("Injected custom map styles");
-      }
-    };
-    
-    // Call style injection immediately
-    injectMapStyle();
-    
     // Function to initialize the map
     const initMap = () => {
       if (mapRef.current && !leafletMap.current) {
@@ -69,28 +43,15 @@ export default function MapVisualization({
             minZoom: 2,
             maxZoom: 10,
             zoomControl: false,
-            attributionControl: false
+            attributionControl: false,
           });
-          
-          // Set background color directly on the map element
-          mapEl.style.backgroundColor = '#000000';
           
           leafletMap.current = map;
     
-          // Use Stamen's Toner map which has high contrast white text on black background
-          L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png', {
-            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            subdomains: 'abcd',
-            minZoom: 0,
-            maxZoom: 20
+          // Add dark mode tile layer
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           }).addTo(map);
-          
-          // Force set background color to ensure it's dark during loading
-          document.querySelectorAll('.leaflet-container, .leaflet-tile, .leaflet-tile-container').forEach(el => {
-            if (el instanceof HTMLElement) {
-              el.style.backgroundColor = '#000000';
-            }
-          });
     
           // Add zoom control in the top right with custom styling
           // Remove existing zoom control if any
@@ -234,15 +195,15 @@ export default function MapVisualization({
 
   if (isLoading) {
     return (
-      <div className="map-container flex items-center justify-center dark-map-bg">
-        <div className="text-[#00f3ff] text-xl font-bold">Loading map data...</div>
+      <div className="map-container flex items-center justify-center bg-black">
+        <div className="text-[#00f3ff] text-xl">Loading map data...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="map-container flex items-center justify-center dark-map-bg">
+      <div className="map-container flex items-center justify-center bg-black">
         <Card className="w-full max-w-md mx-4 border-glow-pink">
           <CardContent className="pt-6">
             <h2 className="text-xl font-bold text-[#ff00ea] mb-2">Error Loading Map</h2>
