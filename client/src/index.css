@@ -177,7 +177,7 @@
   }
   
   .leaflet-tile-pane {
-    filter: hue-rotate(200deg) invert(0.85) contrast(2) saturate(1.8) brightness(1.5);
+    filter: none; /* Remove any filters to let the base map display as designed */
   }
   
   /* Make sure non-loaded tiles have dark background */
@@ -314,17 +314,17 @@
   .leaflet-container .leaflet-pane text,
   .map-labels-layer text,
   .map-labels-layer path {
-    font-weight: 700 !important;
+    font-weight: 600 !important;
     fill: #ffffff !important;
     color: #ffffff !important;
-    text-shadow: 0 0 4px #000, 0 0 2px #000 !important;
-    filter: brightness(2) contrast(1.5) drop-shadow(0px 0px 3px rgba(255, 255, 255, 0.7));
+    text-shadow: 0 0 2px #000 !important;
+    filter: brightness(1.2) contrast(1.2) drop-shadow(0px 0px 1px rgba(0, 0, 0, 0.8));
   }
   
-  /* Extreme brightness for labels layer */
+  /* Normal brightness for labels - keeping them clear but not extreme */
   .map-labels-layer {
-    filter: brightness(5) contrast(3) !important;
+    filter: brightness(1.2) contrast(1.2) !important;
     opacity: 1 !important;
-    z-index: 1000 !important;
+    z-index: 400 !important;
   }
 }

@@ -31,18 +31,15 @@ export default function MapVisualization({
         const style = document.createElement('style');
         style.id = styleId;
         style.innerHTML = `
-          .leaflet-container { background: #050a10 !important; }
-          .leaflet-tile-pane { filter: hue-rotate(210deg) invert(0.9) contrast(2.2) saturate(2) brightness(1.7) !important; }
-          .map-labels-layer { filter: brightness(5) contrast(3) !important; opacity: 1 !important; z-index: 1000 !important; }
+          .leaflet-container { background: #121212 !important; }
+          .leaflet-tile-pane { filter: none !important; }
           .leaflet-container .leaflet-tile-pane .leaflet-layer text, 
-          .leaflet-container .leaflet-pane text,
-          .map-labels-layer text,
-          .map-labels-layer path {
-            font-weight: 800 !important;
+          .leaflet-container .leaflet-pane text {
+            font-weight: 600 !important;
             fill: #ffffff !important;
             color: #ffffff !important;
-            text-shadow: 0 0 5px #000, 0 0 3px #000 !important;
-            filter: brightness(3) contrast(2) drop-shadow(0px 0px 4px rgba(255, 255, 255, 0.8));
+            text-shadow: 0 0 2px #000 !important;
+            filter: brightness(1.2) drop-shadow(0px 0px 1px rgba(0, 0, 0, 0.8));
           }
         `;
         document.head.appendChild(style);
@@ -80,10 +77,10 @@ export default function MapVisualization({
           
           leafletMap.current = map;
     
-          // Use a darker, more dramatic tile layer from the Thunderforest Spinal Map - you'd need API key for production
-          L.tileLayer('https://tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png?apikey=6170aad10dfd42a38d4d8c709a536f38', {
-            attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            maxZoom: 22
+          // Use CartoDb dark matter - dark gray land with light gray oceans
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 20
           }).addTo(map);
           
           // Force set background color to ensure it's dark during loading
