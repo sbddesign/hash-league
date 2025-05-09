@@ -183,9 +183,10 @@ export class MemStorage implements IStorage {
         description:
           "ATL BitLab's strategic hashrate deployment squadron. Atlanta plebs unite!",
         avatar: "/atl-hash-force.jpg",
-        website: "https://atlhashforce.org",
-        twitter: "https://twitter.com/atlhashforce",
-        nostr: "npub1atl...",
+        website: "https://atlbitlab.com/",
+        twitter: "https://x.com/atlbitlab",
+        nostr:
+          "https://primal.net/p/npub1cst99sheckxrllnh9pw093mls775tdx80x99mq096pkl2t9r9swqsugekj",
         createdAt: "2025-02-15 14:30:00",
         poolApiUrl: "http://pool.atlbitlab.com:3334",
         isActive: true,

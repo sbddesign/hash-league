@@ -224,7 +224,9 @@ export default function SidePanel({ isOpen, pool, onClose }: SidePanelProps) {
                   
                   {pool.nostr && (
                     <a 
-                      href={`nostr:${pool.nostr}`} 
+                      href={pool.nostr} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
                       className="flex items-center px-3 py-2 bg-black bg-opacity-50 rounded-lg border border-[#00f3ff] text-[#00f3ff] hover:bg-[#00f3ff] hover:bg-opacity-10 transition-colors"
                     >
                       <Zap className="h-4 w-4 mr-2" />
