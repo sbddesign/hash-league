@@ -23,20 +23,30 @@ export const miningPools = pgTable("mining_pools", {
   latitude: real("latitude").notNull(),
   longitude: real("longitude").notNull(),
   description: text("description").notNull(),
-  hashrate: text("hashrate").notNull(),
-  rank: integer("rank").notNull(),
-  workers: integer("workers").notNull(),
   avatar: text("avatar").notNull(),
   website: text("website"),
   twitter: text("twitter"),
   nostr: text("nostr"),
-  hashHistory: json("hash_history").$type<number[]>().notNull(),
   createdAt: text("created_at").notNull(),
-  poolApiUrl: text("pool_api_url"),  // URL to the pool's API
-  lastUpdated: text("last_updated"),  // When the pool data was last updated
-  isActive: boolean("is_active").default(true),  // Whether the pool is active
-  networkHashrate: text("network_hashrate"),  // Current network hashrate
-  difficulty: text("difficulty")  // Current mining difficulty
+  isActive: boolean("is_active").default(true),
+  
+  // Live data fields (updated in real-time)
+  hashrate: text("hashrate").default('0 H/s'),
+  workers: integer("workers").default(0),
+  hashHistory: json("hash_history").$type<number[]>().default([0,0,0,0,0,0,0]),
+  lastUpdated: text("last_updated"),
+  networkHashrate: text("network_hashrate"),
+  difficulty: text("difficulty"),
+  
+  // For real pools: API endpoint to fetch real-time data
+  poolApiUrl: text("pool_api_url"),
+  
+  // For test pools: test data to display
+  testData: json("test_data").$type<{
+    hashrate: string, 
+    workers: number,
+    hashHistory: number[]
+  }>(),
 });
 
 export const insertMiningPoolSchema = createInsertSchema(miningPools).omit({
