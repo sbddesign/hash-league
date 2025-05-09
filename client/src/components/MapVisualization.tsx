@@ -23,7 +23,36 @@ export default function MapVisualization({
   const leafletMap = useRef<L.Map | null>(null);
   const markers = useRef<{[key: number]: any}>({});
 
+  // Add direct style injection to override any caching
   useEffect(() => {
+    const injectMapStyle = () => {
+      const styleId = 'map-custom-style';
+      if (!document.getElementById(styleId)) {
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.innerHTML = `
+          .leaflet-container { background: #050a10 !important; }
+          .leaflet-tile-pane { filter: hue-rotate(210deg) invert(0.9) contrast(2.2) saturate(2) brightness(1.7) !important; }
+          .map-labels-layer { filter: brightness(5) contrast(3) !important; opacity: 1 !important; z-index: 1000 !important; }
+          .leaflet-container .leaflet-tile-pane .leaflet-layer text, 
+          .leaflet-container .leaflet-pane text,
+          .map-labels-layer text,
+          .map-labels-layer path {
+            font-weight: 800 !important;
+            fill: #ffffff !important;
+            color: #ffffff !important;
+            text-shadow: 0 0 5px #000, 0 0 3px #000 !important;
+            filter: brightness(3) contrast(2) drop-shadow(0px 0px 4px rgba(255, 255, 255, 0.8));
+          }
+        `;
+        document.head.appendChild(style);
+        console.log("Injected custom map styles");
+      }
+    };
+    
+    // Call style injection immediately
+    injectMapStyle();
+    
     // Function to initialize the map
     const initMap = () => {
       if (mapRef.current && !leafletMap.current) {
@@ -43,21 +72,26 @@ export default function MapVisualization({
             minZoom: 2,
             maxZoom: 10,
             zoomControl: false,
-            attributionControl: false,
+            attributionControl: false
           });
+          
+          // Set background color directly on the map element
+          mapEl.style.backgroundColor = '#050a10';
           
           leafletMap.current = map;
     
-          // Add custom dark mode tile layer
-          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          // Use a darker, more dramatic tile layer from the Thunderforest Spinal Map - you'd need API key for production
+          L.tileLayer('https://tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png?apikey=6170aad10dfd42a38d4d8c709a536f38', {
+            attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 22
           }).addTo(map);
           
-          // Add custom labels layer with bright white text
-          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', {
-            attribution: '',
-            className: 'map-labels-layer'
-          }).addTo(map);
+          // Force set background color to ensure it's dark during loading
+          document.querySelectorAll('.leaflet-container, .leaflet-tile, .leaflet-tile-container').forEach(el => {
+            if (el instanceof HTMLElement) {
+              el.style.backgroundColor = '#050a10';
+            }
+          });
     
           // Add zoom control in the top right with custom styling
           // Remove existing zoom control if any
