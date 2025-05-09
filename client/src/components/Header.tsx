@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Moon, Sun } from 'lucide-react';
+import { FC } from 'react';
 
 interface HeaderProps {
   globalHashrate: string;
@@ -7,13 +6,6 @@ interface HeaderProps {
 }
 
 export default function Header({ globalHashrate, activePools }: HeaderProps) {
-  const [isDarkMode, setIsDarkMode] = useState(true);
-  
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-    // Since we're always in dark mode for this app, this is just for the UI toggle
-  };
-  
   return (
     <header className="fixed top-0 left-0 right-0 z-30 bg-black bg-opacity-70 backdrop-blur-sm border-b border-[#00f3ff] px-4 py-3 flex justify-between items-center">
       <div className="flex items-center">
@@ -32,14 +24,6 @@ export default function Header({ globalHashrate, activePools }: HeaderProps) {
             <i className="mr-2">👥</i>Active Pools: <span className="font-bold">{activePools}</span>
           </div>
         </div>
-        
-        <button 
-          onClick={toggleTheme} 
-          className="text-white hover:text-[#00f3ff] transition-colors"
-          aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
-        >
-          {isDarkMode ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-        </button>
       </div>
     </header>
   );
