@@ -12,8 +12,14 @@ Edit the JSON file at: TODO
 
 Run `npm run dev` for hot reload and `npm run build` to deploy.
 
+## Tech Stack
+- Typescript
+- Vite
+- PublicPool
+- Mempool.Space API
+
 ## Roadmap
 
-- [ ] Public Pool API Support - WIP
+- [x] Public Pool API Support
 - [ ] Stratum V2 SRI Support
 - [ ] DATUM Gateway API Support
