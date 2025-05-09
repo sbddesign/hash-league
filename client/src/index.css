@@ -185,37 +185,45 @@
     background-color: #121212 !important;
   }
   
-  /* Override Leaflet popup styling for dark theme */
-  .leaflet-popup-content-wrapper {
-    background-color: #121212 !important;
+  /* Style the Leaflet popups to match the reference image */
+  .custom-popup .leaflet-popup-content-wrapper {
+    background-color: #000000 !important;
     color: white !important;
     border: none !important;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.8) !important;
-    border-radius: 0 !important;
-    padding: 0 !important;
+    box-shadow: none !important;
+    border-radius: 8px !important;
+    padding: 10px !important;
     margin: 0 !important;
   }
   
-  .leaflet-popup-content {
+  .custom-popup .leaflet-popup-content {
     margin: 0 !important;
     padding: 0 !important;
+    text-align: center !important;
+    min-width: 150px !important;
   }
   
-  /* Remove all unnecessary popup elements */
-  .leaflet-popup-tip-container,
-  .leaflet-popup-tip {
-    display: none !important; /* Remove the popup arrow */
+  /* Style the popup tip to match the black background */
+  .custom-popup .leaflet-popup-tip-container {
+    width: 20px !important;
+    height: 10px !important;
+  }
+  
+  .custom-popup .leaflet-popup-tip {
+    background-color: #000000 !important;
+    box-shadow: none !important;
+    border: none !important;
   }
   
   /* Style the close button */
-  .leaflet-popup-close-button {
+  .custom-popup .leaflet-popup-close-button {
     color: white !important;
     font-size: 16px !important;
     top: 4px !important;
     right: 4px !important;
-    width: 20px !important;
-    height: 20px !important;
-    background: rgba(0, 0, 0, 0.5) !important;
+    width: 18px !important;
+    height: 18px !important;
+    background: none !important;
     border-radius: 50% !important;
     display: flex !important;
     align-items: center !important;
@@ -223,28 +231,13 @@
     z-index: 10 !important;
   }
   
-  .leaflet-popup-close-button:hover {
+  .custom-popup .leaflet-popup-close-button:hover {
     color: #00f3ff !important;
-    background: rgba(0, 0, 0, 0.8) !important;
   }
   
-  /* Position the popup slightly above the marker */
+  /* Position the popup above the marker */
   .leaflet-popup {
-    margin-bottom: 25px !important;
-  }
-  
-  /* Style for dark mode popup class */
-  .dark-mode-popup .leaflet-popup-content-wrapper {
-    background-color: #121212 !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-    border-radius: 6px !important;
-  }
-  
-  /* Ensure the popup content fills the wrapper */
-  .popup-content {
-    width: 100% !important;
-    box-sizing: border-box !important;
+    margin-bottom: 12px !important;
   }
   
   /* Custom zoom control styling */

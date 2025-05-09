@@ -162,23 +162,15 @@ export default function MapVisualization({
                 });
               });
               
-              // Dark mode popup with color matching marker type
+              // Simple dark popup with colored text
               const popupColor = isTestPool ? '#00f3ff' : '#ff00ea';
               marker.bindPopup(`
-                <div class="popup-content" style="
-                  background-color: #121212; 
-                  color: white;
-                  border: 1px solid ${popupColor};
-                  border-radius: 6px;
-                  padding: 8px 10px;
-                  box-shadow: 0 0 10px ${popupColor};
-                  min-width: 150px;
-                ">
-                  <div style="font-weight: bold; color: ${popupColor}; margin-bottom: 2px;">${pool.name}</div>
-                  <div style="color: #cccccc; font-size: 12px;">${pool.city}, ${pool.country}</div>
+                <div style="text-align: center;">
+                  <div style="font-weight: bold; color: ${popupColor};">${pool.name}</div>
+                  <div style="color: white; font-size: 12px;">${pool.city}, ${pool.country}</div>
                 </div>
               `, {
-                className: 'dark-mode-popup'
+                className: 'custom-popup'
               });
               
               markers.current[pool.id] = marker;
