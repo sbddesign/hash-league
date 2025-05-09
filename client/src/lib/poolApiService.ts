@@ -277,41 +277,50 @@ export const updateAllPools = async (pools: MiningPool[]): Promise<MiningPool[]>
     // Get all pools back from the map
     const allPoolsUpdated = Array.from(poolsMap.values());
     
-    // Sort pools by hashrate (descending) to update rankings
+    // Helper functions for hashrate comparison
+    const getNumericHashrate = (hashrate: string | null) => {
+      if (!hashrate) return 0;
+      const match = hashrate.match(/^([\d.]+)/);
+      return match ? parseFloat(match[1]) : 0;
+    };
+    
+    const getHashrateUnit = (hashrate: string | null) => {
+      if (!hashrate) return 'H/s';
+      const match = hashrate.match(/(H\/s|KH\/s|MH\/s|GH\/s|TH\/s|PH\/s|EH\/s)$/);
+      return match ? match[1] : 'H/s';
+    };
+    
+    // Unit multipliers
+    const unitMultipliers: { [key: string]: number } = {
+      'H/s': 1,
+      'KH/s': 1000,
+      'MH/s': 1000000,
+      'GH/s': 1000000000,
+      'TH/s': 1000000000000,
+      'PH/s': 1000000000000000,
+      'EH/s': 1000000000000000000
+    };
+    
+    // Calculate normalized hashrate value
+    const getNormalizedHashrate = (pool: MiningPool): number => {
+      const numeric = getNumericHashrate(pool.hashrate);
+      const unit = getHashrateUnit(pool.hashrate);
+      return numeric * (unitMultipliers[unit] || 1);
+    };
+    
+    // Sort pools: first prioritize real pools over test pools, then by hashrate within each group
     const sortedPools = [...allPoolsUpdated].sort((a, b) => {
-      // Extract numeric value from hashrate string
-      const getNumericHashrate = (hashrate: string | null) => {
-        if (!hashrate) return 0;
-        const match = hashrate.match(/^([\d.]+)/);
-        return match ? parseFloat(match[1]) : 0;
-      };
+      // Check if pools are test pools (unclaimed territory) or real pools
+      const aIsTestPool = 'testData' in a && a.testData !== null;
+      const bIsTestPool = 'testData' in b && b.testData !== null;
       
-      // Extract hashrate unit for comparison
-      const getHashrateUnit = (hashrate: string | null) => {
-        if (!hashrate) return 'H/s';
-        const match = hashrate.match(/(H\/s|KH\/s|MH\/s|GH\/s|TH\/s|PH\/s|EH\/s)$/);
-        return match ? match[1] : 'H/s';
-      };
+      // If one is a real pool and the other is a test pool, prioritize real pool
+      if (aIsTestPool && !bIsTestPool) return 1;  // b (real pool) comes first
+      if (!aIsTestPool && bIsTestPool) return -1; // a (real pool) comes first
       
-      // Unit multipliers
-      const unitMultipliers: { [key: string]: number } = {
-        'H/s': 1,
-        'KH/s': 1000,
-        'MH/s': 1000000,
-        'GH/s': 1000000000,
-        'TH/s': 1000000000000,
-        'PH/s': 1000000000000000,
-        'EH/s': 1000000000000000000
-      };
-      
-      const aNumeric = getNumericHashrate(a.hashrate);
-      const bNumeric = getNumericHashrate(b.hashrate);
-      const aUnit = getHashrateUnit(a.hashrate);
-      const bUnit = getHashrateUnit(b.hashrate);
-      
-      // Convert to same unit for comparison
-      const aValue = aNumeric * (unitMultipliers[aUnit] || 1);
-      const bValue = bNumeric * (unitMultipliers[bUnit] || 1);
+      // If both are the same type (both real or both test), sort by hashrate
+      const aValue = getNormalizedHashrate(a);
+      const bValue = getNormalizedHashrate(b);
       
       return bValue - aValue; // Descending order
     });
