@@ -149,10 +149,10 @@ export default function Home() {
       
       if (globalHashrateData.currentHashrate) {
         try {
-          // The hashrate is returned in H/s, convert to PH/s (1 PH/s = 1,000,000,000,000,000 H/s)
-          const hashratePH = globalHashrateData.currentHashrate / 1_000_000_000_000_000;
-          console.log(`Converting global hashrate: ${globalHashrateData.currentHashrate} H/s → ${hashratePH.toFixed(2)} PH/s`);
-          return hashratePH.toFixed(2) + ' PH/s';
+          // The hashrate is returned in H/s, convert to EH/s (1 EH/s = 1,000,000,000,000,000,000 H/s)
+          const hashrateEH = globalHashrateData.currentHashrate / 1_000_000_000_000_000_000;
+          console.log(`Converting global hashrate: ${globalHashrateData.currentHashrate} H/s → ${hashrateEH.toFixed(2)} EH/s`);
+          return hashrateEH.toFixed(2) + ' EH/s';
         } catch (err) {
           console.error("Error formatting global hashrate:", err);
         }
