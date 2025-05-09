@@ -73,20 +73,22 @@ export default function MapVisualization({
           });
           
           // Set background color directly on the map element
-          mapEl.style.backgroundColor = '#050a10';
+          mapEl.style.backgroundColor = '#000000';
           
           leafletMap.current = map;
     
-          // Use CartoDb dark matter - dark gray land with light gray oceans
-          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          // Use Stamen's Toner map which has high contrast white text on black background
+          L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png', {
+            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            subdomains: 'abcd',
+            minZoom: 0,
             maxZoom: 20
           }).addTo(map);
           
           // Force set background color to ensure it's dark during loading
           document.querySelectorAll('.leaflet-container, .leaflet-tile, .leaflet-tile-container').forEach(el => {
             if (el instanceof HTMLElement) {
-              el.style.backgroundColor = '#050a10';
+              el.style.backgroundColor = '#000000';
             }
           });
     

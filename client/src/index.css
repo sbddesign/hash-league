@@ -167,23 +167,23 @@
     z-index: 10;
   }
   
-  /* Ensure loading tiles have dark background */
+  /* Ensure loading tiles have pure black background - works well with Stamen Toner */
   .leaflet-tile-container,
   .leaflet-tile,
   .leaflet-image-layer,
   .leaflet-tile-pane,
   .leaflet-container {
-    background-color: #0a1015 !important; /* Darker blue-tinted dark background for oceans */
+    background-color: #000000 !important; /* Pure black for Stamen Toner map */
   }
   
   .leaflet-tile-pane {
     filter: none; /* Remove any filters to let the base map display as designed */
   }
   
-  /* Make sure non-loaded tiles have dark background */
+  /* Make sure non-loaded tiles have pure black background */
   .leaflet-tile-loaded,
   .leaflet-tile-loading {
-    background-color: #0a1015 !important;
+    background-color: #000000 !important;
   }
   
   .leaflet-popup-content-wrapper {
@@ -234,7 +234,7 @@
     left: 0;
     z-index: 10;
     overflow: hidden;
-    background-color: #0a1015 !important;
+    background-color: #000000 !important;
   }
   
   #map {
@@ -244,7 +244,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    background-color: #0a1015 !important;
+    background-color: #000000 !important;
   }
 
   /* Animation for the Add button */
@@ -299,9 +299,9 @@
     background: rgba(0, 243, 255, 1);
   }
   
-  /* Dark map background to prevent white flashing during loading */
+  /* Pure black background to prevent white flashing during loading */
   .dark-map-bg {
-    background-color: #0a1015 !important;
+    background-color: #000000 !important;
   }
   
   /* Improve map text readability */
