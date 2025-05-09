@@ -1,3 +1,5 @@
+![](https://raw.githubusercontent.com/sbddesign/hash-league/refs/heads/main/HashLeague.jpg)
+
 # HashLeague
 
 A leaderboard that ranks bitcoin communities by the combined hashrate of their community mining pools.
