@@ -236,7 +236,7 @@ export default function SidePanel({ isOpen, pool, onClose }: SidePanelProps) {
                   
                   {pool.poolApiUrl && (
                     <a 
-                      href={pool.poolApiUrl} 
+                      href={`${pool.poolApiUrl}/api/info`} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="flex items-center px-3 py-2 bg-black bg-opacity-50 rounded-lg border border-[#ff00ea] text-[#ff00ea] hover:bg-[#ff00ea] hover:bg-opacity-10 transition-colors"
