@@ -185,16 +185,49 @@
     background-color: #121212 !important;
   }
   
+  /* Override Leaflet popup styling for dark theme */
   .leaflet-popup-content-wrapper {
-    background-color: rgba(0, 0, 0, 0.8) !important;
+    background-color: transparent !important;
     color: white !important;
-    border: 1px solid #00f3ff !important;
-    box-shadow: 0 0 10px #00f3ff !important;
-    border-radius: 5px !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
   
-  .leaflet-popup-tip {
-    background-color: #00f3ff !important;
+  .leaflet-popup-content {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .leaflet-popup-tip-container {
+    display: none !important; /* Remove the popup arrow */
+  }
+  
+  .leaflet-popup-close-button {
+    color: white !important;
+    font-size: 16px !important;
+    top: 8px !important;
+    right: 8px !important;
+    width: 20px !important;
+    height: 20px !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 10 !important;
+  }
+  
+  .leaflet-popup-close-button:hover {
+    color: #00f3ff !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+  }
+  
+  /* Position the popup slightly above the marker */
+  .leaflet-popup {
+    margin-bottom: 25px !important;
   }
   
   /* Custom zoom control styling */
