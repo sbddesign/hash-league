@@ -108,7 +108,7 @@ export default function MapVisualization({
         const testPoolIcon = L.divIcon({
           className: 'pool-marker',
           iconSize: [20, 20],
-          html: '<div style="width:100%;height:100%;border-radius:50%;background-color:#FFD700;box-shadow:0 0 10px #FFD700, 0 0 20px #FFD700;"></div>'
+          html: '<div style="width:100%;height:100%;border-radius:50%;background-color:#00f3ff;box-shadow:0 0 10px #00f3ff, 0 0 20px #00f3ff;"></div>'
         });
   
         console.log("Adding", pools.length, "markers to map");
@@ -138,7 +138,7 @@ export default function MapVisualization({
               });
               
               // Simple popup on hover with color matching marker type
-              const popupColor = isTestPool ? '#FFD700' : '#ff00ea';
+              const popupColor = isTestPool ? '#00f3ff' : '#ff00ea';
               marker.bindPopup(`
                 <div class="font-bold" style="color: ${popupColor}">${pool.name}</div>
                 <div class="text-xs">${pool.city}, ${pool.country}</div>
