@@ -171,8 +171,9 @@
   .leaflet-tile-container,
   .leaflet-tile,
   .leaflet-image-layer,
-  .leaflet-tile-pane {
-    background-color: #121a20 !important; /* Slightly blue-tinted dark background for oceans */
+  .leaflet-tile-pane,
+  .leaflet-container {
+    background-color: #0a1015 !important; /* Darker blue-tinted dark background for oceans */
   }
   
   .leaflet-tile-pane {
@@ -182,7 +183,7 @@
   /* Make sure non-loaded tiles have dark background */
   .leaflet-tile-loaded,
   .leaflet-tile-loading {
-    background-color: #121a20 !important;
+    background-color: #0a1015 !important;
   }
   
   .leaflet-popup-content-wrapper {
@@ -233,7 +234,7 @@
     left: 0;
     z-index: 10;
     overflow: hidden;
-    background-color: #121a20 !important;
+    background-color: #0a1015 !important;
   }
   
   #map {
@@ -243,7 +244,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    background-color: #121a20 !important;
+    background-color: #0a1015 !important;
   }
 
   /* Animation for the Add button */
@@ -300,7 +301,7 @@
   
   /* Dark map background to prevent white flashing during loading */
   .dark-map-bg {
-    background-color: #121a20 !important;
+    background-color: #0a1015 !important;
   }
   
   /* Improve map text readability */
@@ -310,11 +311,20 @@
   }
   
   .leaflet-container .leaflet-tile-pane .leaflet-layer text,
-  .leaflet-container .leaflet-pane text {
+  .leaflet-container .leaflet-pane text,
+  .map-labels-layer text,
+  .map-labels-layer path {
     font-weight: 700 !important;
     fill: #ffffff !important;
     color: #ffffff !important;
     text-shadow: 0 0 4px #000, 0 0 2px #000 !important;
     filter: brightness(2) contrast(1.5) drop-shadow(0px 0px 3px rgba(255, 255, 255, 0.7));
+  }
+  
+  /* Extreme brightness for labels layer */
+  .map-labels-layer {
+    filter: brightness(5) contrast(3) !important;
+    opacity: 1 !important;
+    z-index: 1000 !important;
   }
 }

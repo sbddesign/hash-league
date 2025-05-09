@@ -48,9 +48,15 @@ export default function MapVisualization({
           
           leafletMap.current = map;
     
-          // Add dark mode tile layer
-          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+          // Add custom dark mode tile layer
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          }).addTo(map);
+          
+          // Add custom labels layer with bright white text
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', {
+            attribution: '',
+            className: 'map-labels-layer'
           }).addTo(map);
     
           // Add zoom control in the top right with custom styling
@@ -195,15 +201,15 @@ export default function MapVisualization({
 
   if (isLoading) {
     return (
-      <div className="map-container flex items-center justify-center bg-black">
-        <div className="text-[#00f3ff] text-xl">Loading map data...</div>
+      <div className="map-container flex items-center justify-center dark-map-bg">
+        <div className="text-[#00f3ff] text-xl font-bold">Loading map data...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="map-container flex items-center justify-center bg-black">
+      <div className="map-container flex items-center justify-center dark-map-bg">
         <Card className="w-full max-w-md mx-4 border-glow-pink">
           <CardContent className="pt-6">
             <h2 className="text-xl font-bold text-[#ff00ea] mb-2">Error Loading Map</h2>
