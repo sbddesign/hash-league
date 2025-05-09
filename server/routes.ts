@@ -3,31 +3,13 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import fetch from "node-fetch";
 
-// Utility function for fetch with timeout
-const fetchWithTimeout = async (url: string, timeoutMs = 5000) => {
-  // Create an AbortController for the timeout
-  const controller = new AbortController();
-  
-  // Set up the timeout
-  const timeoutId = setTimeout(() => {
-    controller.abort();
-  }, timeoutMs);
-  
+// Simple fetch function without timeout to avoid AbortController issues
+const simpleFetch = async (url: string) => {
   try {
-    // Make the request with signal
-    const response = await fetch(url, {
-      signal: controller.signal as any // Type assertion to avoid LSP errors
-    });
-    
-    // Clear the timeout
-    clearTimeout(timeoutId);
-    
-    return response;
+    console.log(`Proxying request to: ${url}`);
+    return await fetch(url);
   } catch (error) {
-    // Clear the timeout
-    clearTimeout(timeoutId);
-    
-    // Rethrow the error
+    console.error(`Error fetching ${url}:`, error);
     throw error;
   }
 };
@@ -72,9 +54,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const fetchUrl = `${url}/api/info`;
-      console.log(`Proxying request to: ${fetchUrl}`);
-      
-      const response = await fetchWithTimeout(fetchUrl, 5000);
+      const response = await simpleFetch(fetchUrl);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -95,9 +75,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const fetchUrl = `${url}/api/info/chart`;
-      console.log(`Proxying request to: ${fetchUrl}`);
-      
-      const response = await fetchWithTimeout(fetchUrl, 5000);
+      const response = await simpleFetch(fetchUrl);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -118,9 +96,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const fetchUrl = `${url}/api/network`;
-      console.log(`Proxying request to: ${fetchUrl}`);
-      
-      const response = await fetchWithTimeout(fetchUrl, 5000);
+      const response = await simpleFetch(fetchUrl);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }

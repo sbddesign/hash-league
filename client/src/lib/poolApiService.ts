@@ -33,64 +33,22 @@ interface NetworkInfoResponse {
   warnings?: string;
 }
 
-// Utility to handle fetch with timeout
-const fetchWithTimeout = async (url: string, timeout = 5000) => {
-  let controller;
-  let timeoutId;
-  
+// Simple fetch without timeout to avoid AbortController issues
+const fetchWithTimeout = async (url: string, _timeout = 5000) => {
   try {
-    // Create an AbortController for this request if supported
-    controller = new AbortController();
-    
-    // Set up the timeout
-    timeoutId = setTimeout(() => {
-      try {
-        if (controller) {
-          controller.abort();
-        }
-      } catch (e) {
-        console.error('Error aborting fetch:', e);
-      }
-    }, timeout);
-    
-    // Prepare request options
-    const options: RequestInit = {
+    // Make the request with simple caching headers but no AbortController
+    const response = await fetch(url, {
       headers: {
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',
         'Expires': '0',
       }
-    };
-    
-    // Add signal if AbortController is available
-    if (controller) {
-      options.signal = controller.signal;
-    }
-    
-    // Make the request
-    const response = await fetch(url, options);
-    
-    // Clear the timeout
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
+    });
     
     return response;
   } catch (error) {
-    // Clear the timeout if it exists
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-    
-    // Log the error
+    // Just log the error and rethrow
     console.error(`Fetch error for ${url}:`, error);
-    
-    // Handle abort errors more gracefully
-    if (error instanceof DOMException && error.name === 'AbortError') {
-      console.log(`Request timed out for ${url}`);
-      throw new Error(`Request timed out for ${url}`);
-    }
-    
     throw error;
   }
 };
