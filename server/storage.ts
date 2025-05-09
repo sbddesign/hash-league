@@ -104,6 +104,25 @@ export class MemStorage implements IStorage {
   private initializeSampleData() {
     const samplePools: InsertMiningPool[] = [
       {
+        name: "Antarctic Mining Expedition",
+        country: "Antarctica",
+        city: "McMurdo Station",
+        latitude: -77.8419,
+        longitude: 166.6863,
+        description: "The world's southernmost Bitcoin mining operation, utilizing renewable energy from McMurdo Station's geothermal sources. Our primary mission is to demonstrate sustainable Bitcoin mining in extreme environments.",
+        hashrate: "0 H/s",
+        rank: 12,
+        workers: 0,
+        avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=Antarctica&backgroundColor=b6e3f4",
+        website: "https://antarcticabtc.org",
+        twitter: "https://twitter.com/AntarcticBTC",
+        nostr: "npub1antarctica...",
+        hashHistory: [0, 0, 0, 0, 0, 0, 0],
+        createdAt: new Date().toISOString(),
+        poolApiUrl: "https://public-pool.io:40557",
+        isActive: true
+      },
+      {
         name: "Tokyo Bitcoin Hub",
         country: "Japan",
         city: "Tokyo",
