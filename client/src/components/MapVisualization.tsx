@@ -205,14 +205,6 @@ export default function MapVisualization({
             <span className="w-3 h-3 rounded-full bg-[#FFD700] mr-2" style={{ boxShadow: '0 0 5px #FFD700' }}></span>
             <span>Unclaimed Territory</span>
           </div>
-          <div className="flex items-center">
-            <span className="w-3 h-3 rounded border border-[#00f3ff] mr-2"></span>
-            <span>Country Border</span>
-          </div>
-          <div className="flex items-center">
-            <span className="w-3 h-3 bg-[#39FF14] bg-opacity-30 mr-2"></span>
-            <span>Hash Power Heat Map</span>
-          </div>
         </div>
       </div>
     </div>
