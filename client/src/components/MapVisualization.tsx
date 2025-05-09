@@ -54,18 +54,33 @@ export default function MapVisualization({
           }).addTo(map);
     
           // Add zoom control in the top right with custom styling
-          L.control.zoom({
-            position: 'topright'
-          }).addTo(map);
+          // Remove existing zoom control if any
+          const existingControls = document.querySelectorAll('.leaflet-control-zoom');
+          existingControls.forEach(el => el.remove());
           
-          // Apply custom styling to zoom controls
-          document.querySelectorAll('.leaflet-control-zoom-in, .leaflet-control-zoom-out').forEach(el => {
-            if (el instanceof HTMLElement) {
-              el.style.backgroundColor = '#1a1a1a';
-              el.style.color = '#00f3ff';
-              el.style.borderColor = '#333';
-            }
+          // Add new zoom control
+          const zoomControl = new L.Control.Zoom({
+            position: 'topright',
+            zoomInTitle: 'Zoom in',
+            zoomOutTitle: 'Zoom out'
           });
+          
+          zoomControl.addTo(map);
+          
+          // Force re-render of controls
+          setTimeout(() => {
+            // Apply custom styling to zoom controls
+            document.querySelectorAll('.leaflet-control-zoom-in, .leaflet-control-zoom-out').forEach(el => {
+              if (el instanceof HTMLElement) {
+                el.style.backgroundColor = '#1a1a1a';
+                el.style.color = '#00f3ff';
+                el.style.borderColor = '#333';
+                // Make control more visible
+                el.style.fontSize = '18px';
+                el.style.fontWeight = 'bold';
+              }
+            });
+          }, 100);
           
           // Force a resize to ensure the map fills the container
           setTimeout(() => {
