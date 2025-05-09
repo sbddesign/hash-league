@@ -14,15 +14,15 @@ export default function SidePanel({ isOpen, pool, onClose }: SidePanelProps) {
 
   return (
     <div 
-      className={`fixed top-0 right-0 h-full w-full md:w-96 bg-black bg-opacity-90 backdrop-blur-md z-20 border-l border-[#00f3ff] shadow-[0_0_10px_#00f3ff] transform transition-transform overflow-y-auto ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+      className={`fixed top-0 right-0 h-full w-full md:w-96 bg-black bg-opacity-90 backdrop-blur-md z-40 border-l border-[#00f3ff] shadow-[0_0_10px_#00f3ff] transform transition-transform overflow-y-auto ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
     >
       <div className="relative p-6 pt-16">
         <button 
           onClick={onClose}
-          className="absolute top-4 right-4 text-white hover:text-[#ff00ea] transition-colors"
+          className="absolute top-4 right-4 text-white hover:text-[#ff00ea] transition-colors z-50"
           aria-label="Close panel"
         >
-          <X className="h-6 w-6" />
+          <X className="h-6 w-6 shadow-[0_0_5px_#ff00ea]" />
         </button>
         
         <div className="mt-2">
