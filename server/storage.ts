@@ -77,6 +77,8 @@ export class MemStorage implements IStorage {
       lastUpdated: insertPool.lastUpdated || null,
       isActive: insertPool.isActive === undefined ? true : insertPool.isActive,
       poolApiUrl: insertPool.poolApiUrl || null,
+      hashrate: insertPool.hashrate || '0 H/s',
+      workers: insertPool.workers || 0,
     };
 
     const pool: MiningPool = poolData;
@@ -123,6 +125,14 @@ export class MemStorage implements IStorage {
         updates.poolApiUrl !== undefined
           ? updates.poolApiUrl
           : currentPool.poolApiUrl,
+      hashrate:
+        updates.hashrate !== undefined
+          ? updates.hashrate
+          : currentPool.hashrate,
+      workers:
+        updates.workers !== undefined
+          ? updates.workers
+          : currentPool.workers,
     };
 
     // Update the pool in storage
@@ -174,8 +184,8 @@ export class MemStorage implements IStorage {
         name: "Austin Community",
         country: "United States",
         city: "Austin",
-        latitude: 35.6895,
-        longitude: 139.6917,
+        latitude: 30.2672,
+        longitude: -97.7431,
         description: "Where's Austin's hashrate?",
         avatar: "/bitcoin-orange.png",
         createdAt: "2024-10-01 00:00:00",
@@ -190,8 +200,8 @@ export class MemStorage implements IStorage {
         name: "Nashville Community",
         country: "United States",
         city: "Nashville",
-        latitude: 35.6895,
-        longitude: 139.6917,
+        latitude: 36.1627,
+        longitude: -86.7816,
         description: "Where's Nashville's hashrate?",
         avatar: "/bitcoin-purple.png",
         createdAt: "2024-10-01 00:00:00",
@@ -206,8 +216,8 @@ export class MemStorage implements IStorage {
         name: "Denver Community",
         country: "United States",
         city: "Denver",
-        latitude: 35.6895,
-        longitude: 139.6917,
+        latitude: 39.7392,
+        longitude: -104.9903,
         description: "Where's Denver's hashrate?",
         avatar: "/bitcoin-red.png",
         createdAt: "2024-10-01 00:00:00",
@@ -222,8 +232,8 @@ export class MemStorage implements IStorage {
         name: "Miami Community",
         country: "United States",
         city: "Miami",
-        latitude: 35.6895,
-        longitude: 139.6917,
+        latitude: 25.7617,
+        longitude: -80.1918,
         description: "Where's Miami's hashrate?",
         avatar: "/bitcoin-blue.png",
         createdAt: "2024-10-01 00:00:00",
@@ -238,8 +248,8 @@ export class MemStorage implements IStorage {
         name: "Bay Area Community",
         country: "United States",
         city: "San Francisco",
-        latitude: 35.6895,
-        longitude: 139.6917,
+        latitude: 37.7749,
+        longitude: -122.4194,
         description: "Where's the Bay Area's hashrate?",
         avatar: "/bitcoin-orange.png",
         createdAt: "2024-10-01 00:00:00",
@@ -254,9 +264,9 @@ export class MemStorage implements IStorage {
         name: "San Salvador Community",
         country: "El Salvador",
         city: "San Salvador",
-        latitude: 35.6895,
-        longitude: 139.6917,
-        description: "Where's Miami's hashrate?",
+        latitude: 13.6929,
+        longitude: -89.2182,
+        description: "Where's San Salvador's hashrate?",
         avatar: "/bitcoin-purple.png",
         createdAt: "2024-10-01 00:00:00",
         isActive: true,
@@ -270,8 +280,8 @@ export class MemStorage implements IStorage {
         name: "Vinteum Community",
         country: "Brazil",
         city: "Rio de Janeiro",
-        latitude: 35.6895,
-        longitude: 139.6917,
+        latitude: -22.9068,
+        longitude: -43.1729,
         description: "Where's Vinteum's hashrate?",
         avatar: "/bitcoin-red.png",
         createdAt: "2024-10-01 00:00:00",
@@ -286,8 +296,8 @@ export class MemStorage implements IStorage {
         name: "Berlin Community",
         country: "Germany",
         city: "Berlin",
-        latitude: 35.6895,
-        longitude: 139.6917,
+        latitude: 52.5200,
+        longitude: 13.4050,
         description: "Ach, wo ist mein hashrate?",
         avatar: "/bitcoin-blue.png",
         createdAt: "2024-10-01 00:00:00",
@@ -302,8 +312,8 @@ export class MemStorage implements IStorage {
         name: "Bitshala Community",
         country: "India",
         city: "Bangalore",
-        latitude: 35.6895,
-        longitude: 139.6917,
+        latitude: 12.9716,
+        longitude: 77.5946,
         description: "Where is Bangalore's hashrate?",
         avatar: "/bitcoin-orange.png",
         createdAt: "2024-10-01 00:00:00",
