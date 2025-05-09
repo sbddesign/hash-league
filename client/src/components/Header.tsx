@@ -21,7 +21,7 @@ export default function Header({ globalHashrate, activePools }: HeaderProps) {
             <i className="mr-2">⚡</i>Global Hashrate: <span className="font-bold">{globalHashrate}</span>
           </div>
           <div className="px-3 py-1.5 rounded bg-black bg-opacity-50 border border-[#ff00ea] text-[#ff00ea]">
-            <i className="mr-2">👥</i>Active Pools: <span className="font-bold">{activePools}</span>
+            <span className="mr-2">👥</span>Active Pools: <span className="font-bold">{activePools}</span>
           </div>
         </div>
       </div>
