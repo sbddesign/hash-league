@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Map, Tag } from 'lucide-react';
+import { Map, Tag, X } from 'lucide-react';
 import { MiningPool } from '@shared/schema';
 import { Card, CardContent } from '@/components/ui/card';
 import * as L from 'leaflet';
@@ -12,6 +12,56 @@ interface MapVisualizationProps {
   selectedPool: MiningPool | null;
 }
 
+// Our custom popup component
+interface CustomPopupProps {
+  pool: MiningPool | null;
+  position: [number, number] | null;
+  isVisible: boolean;
+  onClose: () => void;
+}
+
+// Our custom popup component
+function CustomPopup({ pool, position, isVisible, onClose }: CustomPopupProps) {
+  if (!pool || !position || !isVisible) return null;
+  
+  const [x, y] = position;
+  const isTestPool = 'testData' in pool && pool.testData !== null;
+  const popupColor = isTestPool ? '#00f3ff' : '#ff00ea';
+  
+  return (
+    <div 
+      className="absolute z-50 pointer-events-auto custom-map-popup"
+      style={{
+        transform: `translate(-50%, -100%) translate(${x}px, ${y}px)`,
+        marginBottom: '10px'
+      }}
+    >
+      <div className="rounded-lg bg-black p-3 shadow-lg" style={{ borderColor: popupColor, borderWidth: '1px' }}>
+        <button 
+          onClick={onClose}
+          className="absolute top-1 right-1 text-white hover:text-gray-300"
+        >
+          <X size={14} />
+        </button>
+        <div className="text-center">
+          <div style={{ fontWeight: 'bold', color: popupColor }}>{pool.name}</div>
+          <div style={{ color: 'white', fontSize: '12px' }}>{pool.city}, {pool.country}</div>
+        </div>
+      </div>
+      {/* Triangle pointer */}
+      <div 
+        className="absolute left-1/2 bottom-0 w-0 h-0" 
+        style={{
+          transform: 'translate(-50%, 90%)',
+          borderLeft: '8px solid transparent',
+          borderRight: '8px solid transparent',
+          borderTop: '8px solid black'
+        }}
+      />
+    </div>
+  );
+}
+
 export default function MapVisualization({ 
   isLoading, 
   error, 
@@ -21,8 +71,11 @@ export default function MapVisualization({
 }: MapVisualizationProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const leafletMap = useRef<L.Map | null>(null);
-  // Store markers with pool ID as the key
   const markers = useRef<{[key: number]: L.Marker}>({});
+  
+  // State for custom popup management
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [popupPosition, setPopupPosition] = useState<[number, number] | null>(null);
 
   useEffect(() => {
     // Function to initialize the map
@@ -163,20 +216,6 @@ export default function MapVisualization({
                 });
               });
               
-              // Simple dark popup with colored text
-              const popupColor = isTestPool ? '#00f3ff' : '#ff00ea';
-              marker.bindPopup(`
-                <div style="text-align: center;">
-                  <div style="font-weight: bold; color: ${popupColor};">${pool.name}</div>
-                  <div style="color: white; font-size: 12px;">${pool.city}, ${pool.country}</div>
-                </div>
-              `, {
-                className: 'custom-popup',
-                closeButton: true,
-                autoClose: false,    // Prevent auto-closing when clicking elsewhere
-                closeOnEscapeKey: true
-              });
-              
               markers.current[pool.id] = marker;
             } catch (error) {
               console.error("Error adding marker:", error);
@@ -190,71 +229,54 @@ export default function MapVisualization({
     setTimeout(addMarkers, 2000);
   }, [pools, onSelectPool]);
 
-  // Update map view when a pool is selected and open its popup
+  // Update map view when a pool is selected and show custom popup
   useEffect(() => {
     if (leafletMap.current && selectedPool) {
-      // Track whether the animation is complete
-      let animationComplete = false;
-      
-      // Close any existing popups
-      leafletMap.current.closePopup();
-      
-      // Get the marker for the selected pool
       const marker = markers.current[selectedPool.id];
       if (!marker) return;
       
-      // Define a function to handle popup opening to ensure consistent behavior
-      const openPopupSafely = () => {
-        if (!leafletMap.current || !marker) return;
-        
-        try {
-          // Unbind the current popup
-          marker.unbindPopup();
-          
-          // Create a new popup with the same content
-          const isTestPool = 'testData' in selectedPool && selectedPool.testData !== null;
-          const popupColor = isTestPool ? '#00f3ff' : '#ff00ea';
-          
-          // Rebind the popup with same content
-          marker.bindPopup(`
-            <div style="text-align: center;">
-              <div style="font-weight: bold; color: ${popupColor};">${selectedPool.name}</div>
-              <div style="color: white; font-size: 12px;">${selectedPool.city}, ${selectedPool.country}</div>
-            </div>
-          `, {
-            className: 'custom-popup',
-            closeButton: true,
-            autoClose: false,    // Prevent auto-closing when clicking elsewhere
-            closeOnEscapeKey: true
-          });
-          
-          // Open the popup
-          marker.openPopup();
-        } catch (error) {
-          console.error("Error opening popup:", error);
-        }
-      };
+      // Get the marker position in pixel coordinates
+      const latLng = L.latLng(selectedPool.latitude, selectedPool.longitude);
+      const point = leafletMap.current.latLngToContainerPoint(latLng);
       
-      // Center the map on the selected pool
-      leafletMap.current.once('moveend', () => {
-        animationComplete = true;
-        // Open popup after animation has completed
-        openPopupSafely();
-      });
+      // Show the popup at the marker's position
+      setPopupPosition([point.x, point.y]);
       
-      // Start the map panning
+      // Center the map on the selected pool 
       leafletMap.current.setView(
         [selectedPool.latitude, selectedPool.longitude], 
         5, 
         { animate: true, duration: 0.5 }
       );
       
-      // Fallback to ensure popup opens even if moveend doesn't fire
+      // Show the popup after a short delay to allow for animation
       setTimeout(() => {
-        if (!animationComplete) {
-          openPopupSafely();
+        setPopupVisible(true);
+      }, 300);
+      
+      // Update popup position when map moves
+      const updatePopupPosition = () => {
+        if (leafletMap.current && selectedPool) {
+          const latLng = L.latLng(selectedPool.latitude, selectedPool.longitude);
+          const point = leafletMap.current.latLngToContainerPoint(latLng);
+          setPopupPosition([point.x, point.y]);
         }
-      }, 600);
+      };
+      
+      // Add event listeners
+      leafletMap.current.on('move', updatePopupPosition);
+      leafletMap.current.on('zoom', updatePopupPosition);
+      
+      // Clean up event listeners
+      return () => {
+        if (leafletMap.current) {
+          leafletMap.current.off('move', updatePopupPosition);
+          leafletMap.current.off('zoom', updatePopupPosition);
+        }
+      };
+    } else {
+      // Hide popup when no pool is selected
+      setPopupVisible(false);
     }
   }, [selectedPool]);
 
@@ -279,9 +301,22 @@ export default function MapVisualization({
     );
   }
 
+  // Close handler for popup
+  const handleClosePopup = () => {
+    setPopupVisible(false);
+  };
+  
   return (
     <div className="map-container dark-map-bg">
       <div id="map" ref={mapRef} className="dark-map-bg"></div>
+      
+      {/* Custom Popup */}
+      <CustomPopup 
+        pool={selectedPool} 
+        position={popupPosition} 
+        isVisible={popupVisible} 
+        onClose={handleClosePopup} 
+      />
       
       {/* Legend */}
       <div className="absolute bottom-5 left-5 z-30 bg-black bg-opacity-70 backdrop-blur-sm p-3 rounded-lg border-glow-blue text-xs font-jetbrains hidden md:block">
