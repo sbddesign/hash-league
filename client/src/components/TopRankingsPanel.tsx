@@ -124,11 +124,11 @@ function getRankDisplay(rank: number | null): JSX.Element {
   }
   
   if (rank === 1) {
-    return <span className="text-yellow-400 font-bold">#{rank}</span>;
+    return <span className="text-orange-500 font-bold">#{rank}</span>;
   } else if (rank === 2) {
-    return <span className="text-gray-300 font-bold">#{rank}</span>;
+    return <span className="text-amber-500 font-bold">#{rank}</span>;
   } else if (rank === 3) {
-    return <span className="text-amber-600 font-bold">#{rank}</span>;
+    return <span className="text-yellow-500 font-bold">#{rank}</span>;
   }
   return <span>#{rank}</span>;
 }
