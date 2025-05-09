@@ -117,11 +117,7 @@ export class MemStorage implements IStorage {
         nostr: "npub1antarctica...",
         createdAt: "2025-01-05 08:00:00",
         poolApiUrl: "https://public-pool.io:40557",
-        isActive: true,
-        // Initialize with default values that will be updated from API
-        hashrate: "0 H/s",
-        workers: 0,
-        hashHistory: [0, 0, 0, 0, 0, 0, 0]
+        isActive: true
       },
       {
         name: "ATL Hash Force",
@@ -136,11 +132,7 @@ export class MemStorage implements IStorage {
         nostr: "npub1atl...",
         createdAt: "2025-02-15 14:30:00",
         poolApiUrl: "http://pool.atlbitlab.com:3334",
-        isActive: true,
-        // Initialize with default values that will be updated from API
-        hashrate: "0 H/s",
-        workers: 0,
-        hashHistory: [0, 0, 0, 0, 0, 0, 0]
+        isActive: true
       }
     ];
 
@@ -163,11 +155,7 @@ export class MemStorage implements IStorage {
           hashrate: "23.4 PH/s",
           workers: 142,
           hashHistory: [40, 60, 45, 55, 65, 70, 90]
-        },
-        // Need to keep these for compatibility during transition
-        hashrate: "23.4 PH/s",
-        workers: 142,
-        hashHistory: [40, 60, 45, 55, 65, 70, 90]
+        }
       },
       {
         name: "Berlin Miners Collective",
@@ -186,11 +174,7 @@ export class MemStorage implements IStorage {
           hashrate: "15.7 PH/s",
           workers: 94,
           hashHistory: [30, 35, 45, 50, 48, 60, 65]
-        },
-        // Need to keep these for compatibility during transition
-        hashrate: "15.7 PH/s",
-        workers: 94,
-        hashHistory: [30, 35, 45, 50, 48, 60, 65]
+        }
       },
       {
         name: "New York Hash Collective",
@@ -209,11 +193,7 @@ export class MemStorage implements IStorage {
           hashrate: "31.2 PH/s",
           workers: 178,
           hashHistory: [65, 70, 68, 75, 80, 85, 90]
-        },
-        // Need to keep these for compatibility during transition
-        hashrate: "31.2 PH/s",
-        workers: 178,
-        hashHistory: [65, 70, 68, 75, 80, 85, 90]
+        }
       },
       {
         name: "Cape Town BTC Miners",
@@ -232,11 +212,7 @@ export class MemStorage implements IStorage {
           hashrate: "8.5 PH/s",
           workers: 63,
           hashHistory: [20, 25, 30, 35, 40, 45, 50]
-        },
-        // Need to keep these for compatibility during transition
-        hashrate: "8.5 PH/s",
-        workers: 63,
-        hashHistory: [20, 25, 30, 35, 40, 45, 50]
+        }
       },
       {
         name: "Singapore Bitcoin Club",
@@ -255,11 +231,7 @@ export class MemStorage implements IStorage {
           hashrate: "19.8 PH/s",
           workers: 110,
           hashHistory: [40, 45, 50, 55, 60, 65, 70]
-        },
-        // Need to keep these for compatibility during transition
-        hashrate: "19.8 PH/s",
-        workers: 110,
-        hashHistory: [40, 45, 50, 55, 60, 65, 70]
+        }
       },
       {
         name: "Prague Miners Guild",
@@ -278,11 +250,7 @@ export class MemStorage implements IStorage {
           hashrate: "12.3 PH/s",
           workers: 87,
           hashHistory: [35, 38, 40, 42, 45, 48, 50]
-        },
-        // Need to keep these for compatibility during transition
-        hashrate: "12.3 PH/s",
-        workers: 87,
-        hashHistory: [35, 38, 40, 42, 45, 48, 50]
+        }
       },
       {
         name: "Melbourne Bitcoin Miners",
@@ -301,11 +269,7 @@ export class MemStorage implements IStorage {
           hashrate: "10.5 PH/s",
           workers: 75,
           hashHistory: [30, 32, 35, 40, 45, 48, 52]
-        },
-        // Need to keep these for compatibility during transition
-        hashrate: "10.5 PH/s",
-        workers: 75,
-        hashHistory: [30, 32, 35, 40, 45, 48, 52]
+        }
       },
       {
         name: "Sao Paulo BTC Collective",
@@ -324,11 +288,7 @@ export class MemStorage implements IStorage {
           hashrate: "7.8 PH/s",
           workers: 58,
           hashHistory: [15, 20, 25, 30, 35, 40, 45]
-        },
-        // Need to keep these for compatibility during transition
-        hashrate: "7.8 PH/s",
-        workers: 58,
-        hashHistory: [15, 20, 25, 30, 35, 40, 45]
+        }
       },
       {
         name: "Amsterdam Bitcoin Pioneers",
@@ -347,11 +307,7 @@ export class MemStorage implements IStorage {
           hashrate: "14.2 PH/s",
           workers: 92,
           hashHistory: [35, 40, 45, 50, 55, 60, 65]
-        },
-        // Need to keep these for compatibility during transition
-        hashrate: "14.2 PH/s",
-        workers: 92,
-        hashHistory: [35, 40, 45, 50, 55, 60, 65]
+        }
       },
       {
         name: "Satoshi's Node Seoul",
@@ -370,11 +326,7 @@ export class MemStorage implements IStorage {
           hashrate: "42.1 PH/s",
           workers: 215,
           hashHistory: [75, 80, 85, 90, 95, 98, 100]
-        },
-        // Need to keep these for compatibility during transition
-        hashrate: "42.1 PH/s",
-        workers: 215,
-        hashHistory: [75, 80, 85, 90, 95, 98, 100]
+        }
       }
     ];
 

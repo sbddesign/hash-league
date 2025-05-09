@@ -244,6 +244,7 @@ export const updateAllPools = async (pools: MiningPool[]): Promise<MiningPool[]>
     // Update test pools with static data from testData
     testPools.forEach(pool => {
       if (pool.testData) {
+        // Use data from testData to populate real-time fields
         const updatedPool = { 
           ...pool,
           hashrate: pool.testData.hashrate,
@@ -252,6 +253,24 @@ export const updateAllPools = async (pools: MiningPool[]): Promise<MiningPool[]>
           lastUpdated: new Date().toISOString()
         };
         poolsMap.set(pool.id, updatedPool);
+      }
+    });
+    
+    // Initialize any real pools that haven't had their data set yet
+    // This ensures real pools with API errors still have some display values
+    realPools.forEach(pool => {
+      const currentPool = poolsMap.get(pool.id);
+      if (currentPool) {
+        // Make sure hashrate has a value if missing
+        if (!currentPool.hashrate) {
+          const updatedPool = {
+            ...currentPool,
+            hashrate: "0 H/s", 
+            workers: 0,
+            hashHistory: [0, 0, 0, 0, 0, 0, 0]
+          };
+          poolsMap.set(pool.id, updatedPool);
+        }
       }
     });
     
