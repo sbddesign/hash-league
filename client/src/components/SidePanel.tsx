@@ -30,6 +30,24 @@ export default function SidePanel({ isOpen, pool, onClose }: SidePanelProps) {
     }
   };
   
+  // Format large numbers for better readability
+  const formatNumber = (num: number | string | undefined): string => {
+    if (num === undefined || num === null) return "N/A";
+    
+    const parsedNum = typeof num === 'string' ? parseFloat(num) : num;
+    if (isNaN(parsedNum)) return "N/A";
+    
+    if (parsedNum >= 1000000000) {
+      return (parsedNum / 1000000000).toFixed(2) + 'B';
+    } else if (parsedNum >= 1000000) {
+      return (parsedNum / 1000000).toFixed(2) + 'M';
+    } else if (parsedNum >= 1000) {
+      return (parsedNum / 1000).toFixed(2) + 'K';
+    } else {
+      return parsedNum.toFixed(0);
+    }
+  };
+  
   // Determine API status indicator
   const getApiStatus = () => {
     if (!pool?.poolApiUrl) {

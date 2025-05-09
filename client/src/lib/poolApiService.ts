@@ -118,6 +118,8 @@ export const updatePoolWithLiveData = async (pool: MiningPool): Promise<MiningPo
   }
   
   try {
+    console.log(`Fetching live data for ${pool.name} from ${pool.poolApiUrl}`);
+    
     // Fetch data from all endpoints
     const [poolInfo, chartData, networkInfo] = await Promise.all([
       fetchPoolInfo(pool.poolApiUrl),
@@ -132,12 +134,14 @@ export const updatePoolWithLiveData = async (pool: MiningPool): Promise<MiningPo
     if (poolInfo?.userAgents && poolInfo.userAgents.length > 0) {
       const totalHashRate = poolInfo.userAgents.reduce((sum, agent) => sum + agent.totalHashRate, 0);
       updatedPool.hashrate = formatHashrate(totalHashRate);
+      console.log(`Updated ${pool.name} hashrate to ${updatedPool.hashrate}`);
     }
     
     // Update workers count if available
     if (poolInfo?.userAgents) {
       const totalWorkers = poolInfo.userAgents.reduce((sum, agent) => sum + agent.count, 0);
       updatedPool.workers = totalWorkers;
+      console.log(`Updated ${pool.name} workers to ${updatedPool.workers}`);
     }
     
     // Update hash history from chart data if available
@@ -148,17 +152,20 @@ export const updatePoolWithLiveData = async (pool: MiningPool): Promise<MiningPo
       const lastSevenPoints = historyData.slice(-7);
       if (lastSevenPoints.length > 0) {
         updatedPool.hashHistory = lastSevenPoints;
+        console.log(`Updated ${pool.name} hash history with ${lastSevenPoints.length} points`);
       }
     }
     
     // Add network difficulty if available
     if (networkInfo?.difficulty) {
       updatedPool.difficulty = networkInfo.difficulty.toString();
+      console.log(`Updated ${pool.name} difficulty to ${updatedPool.difficulty}`);
     }
     
     // Add network hashrate if available
     if (networkInfo?.networkhashps) {
       updatedPool.networkHashrate = formatHashrate(networkInfo.networkhashps);
+      console.log(`Updated ${pool.name} network hashrate to ${updatedPool.networkHashrate}`);
     }
     
     // Update last updated timestamp
@@ -167,7 +174,10 @@ export const updatePoolWithLiveData = async (pool: MiningPool): Promise<MiningPo
     return updatedPool;
   } catch (error) {
     console.error(`Error updating pool data for ${pool.name}:`, error);
-    return pool; // Return original pool on error
+    return {
+      ...pool,
+      lastUpdated: new Date().toISOString() // Update timestamp even on error to show status
+    };
   }
 };
 
@@ -178,13 +188,31 @@ export const updateAllPools = async (pools: MiningPool[]): Promise<MiningPool[]>
   }
   
   try {
-    // Update each pool in parallel
-    const updatedPools = await Promise.all(
-      pools.map(pool => updatePoolWithLiveData(pool))
-    );
+    console.log(`Starting update for ${pools.length} pools`);
+    
+    // Only attempt to update pools with valid API URLs
+    const activePools = pools.filter(pool => pool.poolApiUrl && pool.isActive);
+    console.log(`Found ${activePools.length} active pools with API URLs`);
+    
+    // Create mapping of all pools for later merging
+    const poolsMap = new Map<number, MiningPool>();
+    pools.forEach(pool => poolsMap.set(pool.id, pool));
+    
+    // Update active pools in parallel
+    if (activePools.length > 0) {
+      const updatedActivePools = await Promise.all(
+        activePools.map(pool => updatePoolWithLiveData(pool))
+      );
+      
+      // Merge updated pools back into the pools map
+      updatedActivePools.forEach(pool => poolsMap.set(pool.id, pool));
+    }
+    
+    // Get all pools back from the map
+    const allPoolsUpdated = Array.from(poolsMap.values());
     
     // Sort pools by hashrate (descending) to update rankings
-    const sortedPools = [...updatedPools].sort((a, b) => {
+    const sortedPools = [...allPoolsUpdated].sort((a, b) => {
       // Extract numeric value from hashrate string
       const getNumericHashrate = (hashrate: string) => {
         const match = hashrate.match(/^([\d.]+)/);
@@ -221,10 +249,13 @@ export const updateAllPools = async (pools: MiningPool[]): Promise<MiningPool[]>
     });
     
     // Update ranks
-    return sortedPools.map((pool, index) => ({
+    const rankedPools = sortedPools.map((pool, index) => ({
       ...pool,
       rank: index + 1
     }));
+    
+    console.log(`Completed updating and ranking ${rankedPools.length} pools`);
+    return rankedPools;
   } catch (error) {
     console.error('Error updating all pools:', error);
     return pools; // Return original pools on error
