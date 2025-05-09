@@ -215,8 +215,8 @@ export default function MapVisualization({
   }
 
   return (
-    <div className="map-container">
-      <div id="map" ref={mapRef}></div>
+    <div className="map-container dark-map-bg">
+      <div id="map" ref={mapRef} className="dark-map-bg"></div>
       
       {/* Legend */}
       <div className="absolute bottom-5 left-5 z-30 bg-black bg-opacity-70 backdrop-blur-sm p-3 rounded-lg border-glow-blue text-xs font-jetbrains hidden md:block">
