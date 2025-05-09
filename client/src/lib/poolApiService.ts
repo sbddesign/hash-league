@@ -219,23 +219,41 @@ export const updateAllPools = async (pools: MiningPool[]): Promise<MiningPool[]>
   try {
     console.log(`Starting update for ${pools.length} pools`);
     
-    // Only attempt to update pools with valid API URLs
-    const activePools = pools.filter(pool => pool.poolApiUrl && pool.isActive);
-    console.log(`Found ${activePools.length} active pools with API URLs`);
-    
     // Create mapping of all pools for later merging
     const poolsMap = new Map<number, MiningPool>();
     pools.forEach(pool => poolsMap.set(pool.id, pool));
     
-    // Update active pools in parallel
-    if (activePools.length > 0) {
-      const updatedActivePools = await Promise.all(
-        activePools.map(pool => updatePoolWithLiveData(pool))
+    // For real mining pools: Only update those with valid API URLs
+    const realPools = pools.filter(pool => pool.poolApiUrl && pool.isActive);
+    console.log(`Found ${realPools.length} active pools with API URLs`);
+    
+    // For test mining pools: Get data from testData property
+    const testPools = pools.filter(pool => pool.testData && !pool.poolApiUrl && pool.isActive);
+    console.log(`Found ${testPools.length} test pools with static data`);
+    
+    // Update real pools with live data
+    if (realPools.length > 0) {
+      const updatedRealPools = await Promise.all(
+        realPools.map(pool => updatePoolWithLiveData(pool))
       );
       
       // Merge updated pools back into the pools map
-      updatedActivePools.forEach(pool => poolsMap.set(pool.id, pool));
+      updatedRealPools.forEach(pool => poolsMap.set(pool.id, pool));
     }
+    
+    // Update test pools with static data from testData
+    testPools.forEach(pool => {
+      if (pool.testData) {
+        const updatedPool = { 
+          ...pool,
+          hashrate: pool.testData.hashrate,
+          workers: pool.testData.workers,
+          hashHistory: pool.testData.hashHistory,
+          lastUpdated: new Date().toISOString()
+        };
+        poolsMap.set(pool.id, updatedPool);
+      }
+    });
     
     // Get all pools back from the map
     const allPoolsUpdated = Array.from(poolsMap.values());

@@ -34,6 +34,7 @@ export const miningPools = pgTable("mining_pools", {
   hashrate: text("hashrate").default('0 H/s'),
   workers: integer("workers").default(0),
   hashHistory: json("hash_history").$type<number[]>().default([0,0,0,0,0,0,0]),
+  rank: integer("rank").default(0),
   lastUpdated: text("last_updated"),
   networkHashrate: text("network_hashrate"),
   difficulty: text("difficulty"),
