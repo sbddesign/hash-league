@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import MapVisualization from '@/components/MapVisualization';
 import SidePanel from '@/components/SidePanel';
 import AddPoolButton from '@/components/AddPoolButton';
+import TopRankingsPanel from '@/components/TopRankingsPanel';
 import { MiningPool } from '@shared/schema';
 
 // Import Leaflet for map functionality
@@ -69,6 +70,13 @@ export default function Home() {
         
         {/* Add Pool Button - highest z-index for accessibility */}
         <AddPoolButton />
+        
+        {/* Top Rankings Panel */}
+        <TopRankingsPanel 
+          pools={pools} 
+          isVisible={!isPanelOpen} 
+          onSelectPool={handlePoolSelect}
+        />
       </main>
     </div>
   );
