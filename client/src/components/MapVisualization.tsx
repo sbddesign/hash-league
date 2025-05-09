@@ -24,13 +24,20 @@ export default function MapVisualization({
   const markers = useRef<{[key: number]: any}>({});
 
   useEffect(() => {
-    // Initialize map
-    if (mapRef.current && !leafletMap.current) {
-      // Wait a bit for the DOM to be ready
-      setTimeout(() => {
+    // Function to initialize the map
+    const initMap = () => {
+      if (mapRef.current && !leafletMap.current) {
         try {
           console.log("Initializing map...");
-          leafletMap.current = L.map(mapRef.current, {
+          // Ensure the element is not null
+          const mapEl = mapRef.current;
+          if (!mapEl) {
+            console.error("Map element is null");
+            return;
+          }
+          
+          // Create the map instance
+          const map = L.map(mapEl, {
             center: [20, 0],
             zoom: 2,
             minZoom: 2,
@@ -38,31 +45,37 @@ export default function MapVisualization({
             zoomControl: false,
             attributionControl: false,
           });
+          
+          leafletMap.current = map;
     
           // Add dark mode tile layer
           L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          }).addTo(leafletMap.current);
+          }).addTo(map);
     
           // Add zoom control in the bottom left
           L.control.zoom({
             position: 'bottomleft'
-          }).addTo(leafletMap.current);
+          }).addTo(map);
           
           // Force a resize to ensure the map fills the container
           setTimeout(() => {
-            if (leafletMap.current) {
+            if (map) {
               console.log("Invalidating map size...");
-              leafletMap.current.invalidateSize();
+              map.invalidateSize();
             }
-          }, 100);
+          }, 200);
         } catch (error) {
           console.error("Error initializing map:", error);
         }
-      }, 100);
-    }
+      }
+    };
+
+    // Wait for DOM to be fully rendered
+    setTimeout(initMap, 500);
 
     return () => {
+      // Clean up on unmount
       if (leafletMap.current) {
         leafletMap.current.remove();
         leafletMap.current = null;
@@ -151,10 +164,10 @@ export default function MapVisualization({
 
   return (
     <div className="map-container">
-      <div id="map" ref={mapRef} className="z-10 h-full w-full absolute inset-0"></div>
+      <div id="map" ref={mapRef}></div>
       
       {/* Legend */}
-      <div className="absolute bottom-5 left-5 z-20 bg-black bg-opacity-70 backdrop-blur-sm p-3 rounded-lg border-glow-blue text-xs font-jetbrains hidden md:block">
+      <div className="absolute bottom-5 left-5 z-30 bg-black bg-opacity-70 backdrop-blur-sm p-3 rounded-lg border-glow-blue text-xs font-jetbrains hidden md:block">
         <h3 className="text-[#00f3ff] mb-2 uppercase tracking-wider font-semibold">Map Legend</h3>
         <div className="grid grid-cols-1 gap-1">
           <div className="flex items-center">

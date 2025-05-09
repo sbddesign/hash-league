@@ -39,11 +39,11 @@ export default function Home() {
   const activePools = !isLoading && pools ? pools.length : 0;
 
   return (
-    <div className="app-container relative min-h-screen">
+    <div className="app-container relative min-h-screen bg-black">
       {/* Background Grid Overlay */}
       <div className="grid-overlay absolute inset-0 z-0"></div>
       
-      {/* Header */}
+      {/* Header - stays on top with z-index */}
       <Header 
         globalHashrate={totalHashrate} 
         activePools={activePools}
@@ -51,7 +51,7 @@ export default function Home() {
       
       {/* Main Content */}
       <main className="relative w-full h-screen overflow-hidden">
-        {/* Map */}
+        {/* Map first in the DOM for better positioning */}
         <MapVisualization 
           isLoading={isLoading} 
           error={error as Error}
@@ -60,14 +60,14 @@ export default function Home() {
           selectedPool={selectedPool}
         />
         
-        {/* Side Panel */}
+        {/* Side Panel - high z-index to overlay map */}
         <SidePanel 
           isOpen={isPanelOpen} 
           pool={selectedPool}
           onClose={handlePanelClose}
         />
         
-        {/* Add Pool Button */}
+        {/* Add Pool Button - highest z-index for accessibility */}
         <AddPoolButton />
       </main>
     </div>
