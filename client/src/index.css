@@ -346,20 +346,30 @@
     background-color: #121212 !important;
   }
   
-  /* Custom map popup styles */
-  .custom-map-popup {
-    pointer-events: auto;
-    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+  /* Custom Leaflet popup styles */
+  .custom-dark-popup .leaflet-popup-content-wrapper {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    color: #ffffff !important;
+    border-radius: 10px !important;
   }
   
-  /* Animation for popup appearance */
-  @keyframes popup-fade-in {
-    from { opacity: 0; transform: translateY(-20px) translateX(-50%) translateZ(0); }
-    to { opacity: 1; transform: translateY(0) translateX(-50%) translateZ(0); }
+  .custom-dark-popup .leaflet-popup-tip {
+    background-color: rgba(0, 0, 0, 0.9) !important;
   }
   
-  .custom-map-popup {
-    animation: popup-fade-in 0.3s ease-out forwards;
-    will-change: transform, opacity;
+  .custom-dark-popup .leaflet-popup-close-button {
+    color: #ffffff !important;
+  }
+  
+  /* Real pool popup style */
+  .real-pool-popup .leaflet-popup-content-wrapper {
+    border: 1px solid #ff00ea !important;
+    box-shadow: 0 0 10px #ff00ea, 0 0 5px rgba(0, 0, 0, 0.5) !important;
+  }
+  
+  /* Test pool popup style */
+  .test-pool-popup .leaflet-popup-content-wrapper {
+    border: 1px solid #00f3ff !important;
+    box-shadow: 0 0 10px #00f3ff, 0 0 5px rgba(0, 0, 0, 0.5) !important;
   }
 }

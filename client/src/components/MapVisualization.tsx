@@ -191,18 +191,19 @@ export default function MapVisualization({
       // Create popup content in dark style
       const isTestPool = 'testData' in selectedPool && selectedPool.testData !== null;
       const popupColor = isTestPool ? '#00f3ff' : '#ff00ea';
+      const popupClass = isTestPool ? 'test-pool-popup' : 'real-pool-popup';
       
       // Use HTML string for custom styling
       const popupContent = `
         <div class="custom-popup-content">
-          <div style="font-weight: bold; color: ${popupColor}; font-size: 14px; text-align: center;">${selectedPool.name}</div>
-          <div style="color: white; font-size: 12px; text-align: center;">${selectedPool.city}, ${selectedPool.country}</div>
+          <div style="font-weight: bold; color: ${popupColor}; font-size: 16px; text-align: center; margin-bottom: 4px;">${selectedPool.name}</div>
+          <div style="color: white; font-size: 13px; text-align: center;">${selectedPool.city}, ${selectedPool.country}</div>
         </div>
       `;
       
       // Create a popup with styling
       const popup = L.popup({
-        className: 'custom-dark-popup',
+        className: `custom-dark-popup ${popupClass}`,
         closeButton: true,
         autoClose: false,
         closeOnEscapeKey: true,
@@ -211,34 +212,8 @@ export default function MapVisualization({
       .setLatLng([selectedPool.latitude, selectedPool.longitude])
       .setContent(popupContent);
       
-      // Style the popup (a blank popup is opened and then styled)
+      // Open the popup on the map
       popup.openOn(leafletMap.current);
-      
-      // This timeout ensures popup is created in DOM before styling
-      setTimeout(() => {
-        // Apply custom styles directly to the popup elements
-        document.querySelectorAll('.leaflet-popup-content-wrapper').forEach(el => {
-          if (el instanceof HTMLElement) {
-            el.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
-            el.style.borderRadius = '10px';
-            el.style.border = `1px solid ${popupColor}`;
-            el.style.boxShadow = `0 0 10px ${popupColor}, 0 0 5px rgba(0, 0, 0, 0.5)`;
-          }
-        });
-        
-        document.querySelectorAll('.leaflet-popup-tip').forEach(el => {
-          if (el instanceof HTMLElement) {
-            el.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
-            el.style.boxShadow = '0 0 5px rgba(0, 0, 0, 0.5)';
-          }
-        });
-        
-        document.querySelectorAll('.leaflet-popup-close-button').forEach(el => {
-          if (el instanceof HTMLElement) {
-            el.style.color = 'white';
-          }
-        });
-      }, 0);
       
       // Clean up on effect cleanup
       return () => {
@@ -270,22 +245,9 @@ export default function MapVisualization({
     );
   }
 
-  // Close handler for popup
-  const handleClosePopup = () => {
-    setPopupVisible(false);
-  };
-  
   return (
     <div className="map-container dark-map-bg">
       <div id="map" ref={mapRef} className="dark-map-bg"></div>
-      
-      {/* Custom Popup */}
-      <CustomPopup 
-        pool={selectedPool} 
-        position={popupPosition} 
-        isVisible={popupVisible} 
-        onClose={handleClosePopup} 
-      />
       
       {/* Legend */}
       <div className="absolute bottom-5 left-5 z-30 bg-black bg-opacity-70 backdrop-blur-sm p-3 rounded-lg border-glow-blue text-xs font-jetbrains hidden md:block">
