@@ -108,6 +108,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch network info", error: error.message });
     }
   });
+  
+  // Get global network hashrate from mempool.space API
+  app.get("/api/global-hashrate", async (req, res) => {
+    try {
+      console.log("Fetching global hashrate from mempool.space API");
+      const fetchUrl = "https://mempool.space/api/v1/mining/hashrate/1m";
+      const response = await simpleFetch(fetchUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      res.json(data);
+    } catch (error: any) {
+      console.error("Error fetching global hashrate:", error);
+      res.status(500).json({ message: "Failed to fetch global hashrate data", error: error.message });
+    }
+  });
 
   // Update mining pool data endpoint
   app.post("/api/mining-pools/:id/update", async (req, res) => {

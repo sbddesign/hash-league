@@ -24,6 +24,13 @@ export default function Home() {
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
   
+  // Query for global hashrate from mempool.space API
+  const { data: globalHashrateData } = useQuery({
+    queryKey: ['/api/global-hashrate'],
+    staleTime: 1000 * 60 * 1, // 1 minute
+    refetchInterval: 1000 * 60 * 1, // Refetch every 1 minute
+  });
+  
   // Effect to update pools with live data
   useEffect(() => {
     if (pools && pools.length > 0) {
@@ -119,8 +126,24 @@ export default function Home() {
   // Use the updated pools if available, otherwise use the original pools
   const displayPools = updatedPools || pools;
 
-  // Calculate global statistics from the dynamically updated data
-  const calculateTotalHashrate = (): string => {
+  // Format global hashrate from mempool.space API
+  const formatGlobalHashrate = (): string => {
+    if (globalHashrateData && globalHashrateData.currentHashrate) {
+      try {
+        // The hashrate is returned in H/s, convert to PH/s (1 PH/s = 1,000,000,000,000,000 H/s)
+        const hashratePH = globalHashrateData.currentHashrate / 1_000_000_000_000_000;
+        return hashratePH.toFixed(2) + ' PH/s';
+      } catch (err) {
+        console.error("Error formatting global hashrate:", err);
+      }
+    }
+    
+    // Fallback to calculating from local pools if no global data
+    return calculateLocalHashrate();
+  };
+  
+  // Calculate hashrate from our local pools as a fallback
+  const calculateLocalHashrate = (): string => {
     if (!displayPools || displayPools.length === 0) return '0 PH/s';
     
     try {
@@ -153,12 +176,13 @@ export default function Home() {
       
       return total.toFixed(1) + ' PH/s';
     } catch (err) {
-      console.error("Error calculating total hashrate:", err);
+      console.error("Error calculating local hashrate:", err);
       return '0 PH/s';
     }
   };
   
-  const totalHashrate = calculateTotalHashrate();
+  // Use global hashrate from API if available, otherwise fall back to local calculation
+  const globalHashrate = formatGlobalHashrate();
   const activePools = !isLoading && displayPools ? displayPools.length : 0;
 
   return (
@@ -168,7 +192,7 @@ export default function Home() {
       
       {/* Header - stays on top with z-index */}
       <Header 
-        globalHashrate={totalHashrate} 
+        globalHashrate={globalHashrate} 
         activePools={activePools}
       />
       
