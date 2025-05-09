@@ -31,7 +31,12 @@ export const miningPools = pgTable("mining_pools", {
   twitter: text("twitter"),
   nostr: text("nostr"),
   hashHistory: json("hash_history").$type<number[]>().notNull(),
-  createdAt: text("created_at").notNull()
+  createdAt: text("created_at").notNull(),
+  poolApiUrl: text("pool_api_url"),  // URL to the pool's API
+  lastUpdated: text("last_updated"),  // When the pool data was last updated
+  isActive: boolean("is_active").default(true),  // Whether the pool is active
+  networkHashrate: text("network_hashrate"),  // Current network hashrate
+  difficulty: text("difficulty")  // Current mining difficulty
 });
 
 export const insertMiningPoolSchema = createInsertSchema(miningPools).omit({

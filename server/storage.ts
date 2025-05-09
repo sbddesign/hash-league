@@ -76,7 +76,9 @@ export class MemStorage implements IStorage {
         twitter: "https://twitter.com/tokyobtc",
         nostr: "npub1t0ky0hub...",
         hashHistory: [40, 60, 45, 55, 65, 70, 90],
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        poolApiUrl: "http://pool.tokyobitcoin.jp:3334",
+        isActive: true
       },
       {
         name: "Berlin Miners Collective",
@@ -93,7 +95,9 @@ export class MemStorage implements IStorage {
         twitter: "https://twitter.com/berlinminers",
         nostr: "npub1berlin...",
         hashHistory: [30, 35, 45, 50, 48, 60, 65],
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        poolApiUrl: "http://pool.berlinminers.de:3334",
+        isActive: true
       },
       {
         name: "New York Hash Collective",
@@ -110,7 +114,9 @@ export class MemStorage implements IStorage {
         twitter: "https://twitter.com/nyhash",
         nostr: "npub1nyhash...",
         hashHistory: [65, 70, 68, 75, 80, 85, 90],
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        poolApiUrl: "http://pool.nyhash.com:3334",
+        isActive: true
       },
       {
         name: "Cape Town BTC Miners",
@@ -127,7 +133,9 @@ export class MemStorage implements IStorage {
         twitter: "https://twitter.com/capetownbtc",
         nostr: null,
         hashHistory: [20, 25, 30, 35, 40, 45, 50],
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        poolApiUrl: "http://pool.capetownbtc.co.za:3334",
+        isActive: true
       },
       {
         name: "Singapore Bitcoin Club",
@@ -144,7 +152,9 @@ export class MemStorage implements IStorage {
         twitter: "https://twitter.com/sgbitcoin",
         nostr: "npub1sgbtc...",
         hashHistory: [40, 45, 50, 55, 60, 65, 70],
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        poolApiUrl: "http://pool.sgbitcoin.club:3334",
+        isActive: true
       },
       {
         name: "Prague Miners Guild",
@@ -161,7 +171,9 @@ export class MemStorage implements IStorage {
         twitter: "https://twitter.com/pragueminers",
         nostr: null,
         hashHistory: [35, 38, 40, 42, 45, 48, 50],
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        poolApiUrl: "http://pool.praguebtc.cz:3334",
+        isActive: true
       },
       {
         name: "Melbourne Bitcoin Miners",
@@ -178,7 +190,9 @@ export class MemStorage implements IStorage {
         twitter: "https://twitter.com/melbournebtc",
         nostr: "npub1melb...",
         hashHistory: [30, 32, 35, 40, 45, 48, 52],
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        poolApiUrl: "http://pool.melbournebtc.com.au:3334",
+        isActive: true
       },
       {
         name: "Sao Paulo BTC Collective",
@@ -195,7 +209,9 @@ export class MemStorage implements IStorage {
         twitter: "https://twitter.com/spbtc",
         nostr: null,
         hashHistory: [15, 20, 25, 30, 35, 40, 45],
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        poolApiUrl: "http://pool.saopaulobtc.com.br:3334",
+        isActive: true
       },
       {
         name: "Amsterdam Bitcoin Pioneers",
@@ -212,7 +228,9 @@ export class MemStorage implements IStorage {
         twitter: "https://twitter.com/amsterdambtc",
         nostr: "npub1ams...",
         hashHistory: [35, 40, 45, 50, 55, 60, 65],
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        poolApiUrl: "http://pool.amsterdambtc.nl:3334",
+        isActive: true
       },
       {
         name: "Satoshi's Node Seoul",
@@ -229,7 +247,28 @@ export class MemStorage implements IStorage {
         twitter: "https://twitter.com/satoshiseoul",
         nostr: "npub1seoul...",
         hashHistory: [75, 80, 85, 90, 95, 98, 100],
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        poolApiUrl: "http://pool.satoshiseoul.kr:3334",
+        isActive: true
+      },
+      {
+        name: "ATL Hash Force",
+        country: "United States",
+        city: "Atlanta",
+        latitude: 33.7490,
+        longitude: -84.3880,
+        description: "The premier Bitcoin mining collective in the southeastern United States, founded by the Atlanta Bitcoin community. We operate with a focus on renewable energy and community education.",
+        hashrate: "1.17 PH/s",
+        rank: 10,
+        workers: 35,
+        avatar: "https://images.unsplash.com/photo-1575503802870-45de6a6217c8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=128&h=128",
+        website: "https://atlhashforce.org",
+        twitter: "https://twitter.com/atlhashforce",
+        nostr: "npub1atl...",
+        hashHistory: [10, 15, 20, 25, 30, 35, 40],
+        createdAt: new Date().toISOString(),
+        poolApiUrl: "http://pool.atlbitlab.com:3334",
+        isActive: true
       }
     ];
 
