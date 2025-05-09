@@ -35,40 +35,60 @@ interface NetworkInfoResponse {
 
 // Utility to handle fetch with timeout
 const fetchWithTimeout = async (url: string, timeout = 5000) => {
-  // Create an AbortController for this request
-  const controller = new AbortController();
-  
-  // Set up the timeout
-  const timeoutId = setTimeout(() => {
-    controller.abort();
-  }, timeout);
+  let controller;
+  let timeoutId;
   
   try {
-    // Make the request
-    const response = await fetch(url, {
-      signal: controller.signal,
-      // Add cache control headers to prevent caching
+    // Create an AbortController for this request if supported
+    controller = new AbortController();
+    
+    // Set up the timeout
+    timeoutId = setTimeout(() => {
+      try {
+        if (controller) {
+          controller.abort();
+        }
+      } catch (e) {
+        console.error('Error aborting fetch:', e);
+      }
+    }, timeout);
+    
+    // Prepare request options
+    const options: RequestInit = {
       headers: {
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',
         'Expires': '0',
-      },
-    });
+      }
+    };
+    
+    // Add signal if AbortController is available
+    if (controller) {
+      options.signal = controller.signal;
+    }
+    
+    // Make the request
+    const response = await fetch(url, options);
     
     // Clear the timeout
-    clearTimeout(timeoutId);
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
     
     return response;
   } catch (error) {
-    // Clear the timeout
-    clearTimeout(timeoutId);
+    // Clear the timeout if it exists
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
     
     // Log the error
     console.error(`Fetch error for ${url}:`, error);
     
-    // Rethrow a more descriptive error
+    // Handle abort errors more gracefully
     if (error instanceof DOMException && error.name === 'AbortError') {
-      throw new Error(`Request timeout for ${url}`);
+      console.log(`Request timed out for ${url}`);
+      throw new Error(`Request timed out for ${url}`);
     }
     
     throw error;
