@@ -19,7 +19,7 @@ export default function TopRankingsPanel({ pools, isVisible, onSelectPool }: Top
     .slice(0, 10);
   
   return (
-    <div className="fixed top-20 left-5 z-20 w-72 bg-black bg-opacity-80 backdrop-blur-sm rounded-lg border border-[#00f3ff] shadow-[0_0_10px_#00f3ff] overflow-hidden">
+    <div className="fixed top-20 left-5 z-20 w-96 bg-black bg-opacity-80 backdrop-blur-sm rounded-lg border border-[#00f3ff] shadow-[0_0_10px_#00f3ff] overflow-hidden">
       <div 
         className="flex items-center justify-between px-4 py-3 bg-black bg-opacity-40 cursor-pointer"
         onClick={() => setIsExpanded(!isExpanded)}
@@ -38,7 +38,12 @@ export default function TopRankingsPanel({ pools, isVisible, onSelectPool }: Top
       
       {isExpanded && (
         <div className="max-h-[60vh] overflow-y-auto custom-scrollbar">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm table-fixed">
+            <colgroup>
+              <col style={{ width: "20%" }} />
+              <col style={{ width: "50%" }} />
+              <col style={{ width: "30%" }} />
+            </colgroup>
             <thead className="text-xs text-gray-400 uppercase font-jetbrains">
               <tr className="border-b border-gray-800">
                 <th className="px-4 py-2 text-left">Rank</th>
@@ -63,7 +68,7 @@ export default function TopRankingsPanel({ pools, isVisible, onSelectPool }: Top
                         alt={pool.name} 
                         className="w-6 h-6 rounded-full mr-2 border border-[#ff00ea]" 
                       />
-                      <span className="truncate max-w-[100px]">{pool.name}</span>
+                      <span className="truncate max-w-[120px]">{pool.name}</span>
                     </div>
                   </td>
                   <td className="px-4 py-3 text-right font-jetbrains text-[#00f3ff]">
