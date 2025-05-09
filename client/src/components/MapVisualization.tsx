@@ -53,10 +53,19 @@ export default function MapVisualization({
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           }).addTo(map);
     
-          // Add zoom control in the bottom left
+          // Add zoom control in the top right with custom styling
           L.control.zoom({
-            position: 'bottomleft'
+            position: 'topright'
           }).addTo(map);
+          
+          // Apply custom styling to zoom controls
+          document.querySelectorAll('.leaflet-control-zoom-in, .leaflet-control-zoom-out').forEach(el => {
+            if (el instanceof HTMLElement) {
+              el.style.backgroundColor = '#1a1a1a';
+              el.style.color = '#00f3ff';
+              el.style.borderColor = '#333';
+            }
+          });
           
           // Force a resize to ensure the map fills the container
           setTimeout(() => {
