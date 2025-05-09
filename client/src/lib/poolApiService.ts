@@ -35,17 +35,42 @@ interface NetworkInfoResponse {
 
 // Utility to handle fetch with timeout
 const fetchWithTimeout = async (url: string, timeout = 5000) => {
+  // Create an AbortController for this request
   const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeout);
+  
+  // Set up the timeout
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, timeout);
   
   try {
+    // Make the request
     const response = await fetch(url, {
       signal: controller.signal,
+      // Add cache control headers to prevent caching
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
     });
-    clearTimeout(id);
+    
+    // Clear the timeout
+    clearTimeout(timeoutId);
+    
     return response;
   } catch (error) {
-    clearTimeout(id);
+    // Clear the timeout
+    clearTimeout(timeoutId);
+    
+    // Log the error
+    console.error(`Fetch error for ${url}:`, error);
+    
+    // Rethrow a more descriptive error
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      throw new Error(`Request timeout for ${url}`);
+    }
+    
     throw error;
   }
 };

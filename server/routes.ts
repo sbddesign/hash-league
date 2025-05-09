@@ -3,6 +3,35 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import fetch from "node-fetch";
 
+// Utility function for fetch with timeout
+const fetchWithTimeout = async (url: string, timeoutMs = 5000) => {
+  // Create an AbortController for the timeout
+  const controller = new AbortController();
+  
+  // Set up the timeout
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, timeoutMs);
+  
+  try {
+    // Make the request with signal
+    const response = await fetch(url, {
+      signal: controller.signal as any // Type assertion to avoid LSP errors
+    });
+    
+    // Clear the timeout
+    clearTimeout(timeoutId);
+    
+    return response;
+  } catch (error) {
+    // Clear the timeout
+    clearTimeout(timeoutId);
+    
+    // Rethrow the error
+    throw error;
+  }
+};
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // API routes for mining pools
   app.get("/api/mining-pools", async (req, res) => {
@@ -45,11 +74,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const fetchUrl = `${url}/api/info`;
       console.log(`Proxying request to: ${fetchUrl}`);
       
-      const response = await fetch(fetchUrl, { timeout: 5000 });
+      const response = await fetchWithTimeout(fetchUrl, 5000);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
       const data = await response.json();
       
       res.json(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error proxying pool info:", error);
       res.status(500).json({ message: "Failed to fetch pool info", error: error.message });
     }
@@ -65,11 +97,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const fetchUrl = `${url}/api/info/chart`;
       console.log(`Proxying request to: ${fetchUrl}`);
       
-      const response = await fetch(fetchUrl, { timeout: 5000 });
+      const response = await fetchWithTimeout(fetchUrl, 5000);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
       const data = await response.json();
       
       res.json(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error proxying pool chart:", error);
       res.status(500).json({ message: "Failed to fetch pool chart", error: error.message });
     }
@@ -85,11 +120,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const fetchUrl = `${url}/api/network`;
       console.log(`Proxying request to: ${fetchUrl}`);
       
-      const response = await fetch(fetchUrl, { timeout: 5000 });
+      const response = await fetchWithTimeout(fetchUrl, 5000);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
       const data = await response.json();
       
       res.json(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error proxying network info:", error);
       res.status(500).json({ message: "Failed to fetch network info", error: error.message });
     }
