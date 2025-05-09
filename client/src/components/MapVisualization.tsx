@@ -98,11 +98,17 @@ export default function MapVisualization({
         });
         markers.current = {};
         
-        // Create custom icon for markers
-        const poolIcon = L.divIcon({
+        // Create custom icons for markers
+        const realPoolIcon = L.divIcon({
           className: 'pool-marker',
           iconSize: [20, 20],
           html: '<div style="width:100%;height:100%;border-radius:50%;background-color:#ff00ea;box-shadow:0 0 10px #ff00ea, 0 0 20px #ff00ea;"></div>'
+        });
+        
+        const testPoolIcon = L.divIcon({
+          className: 'pool-marker',
+          iconSize: [20, 20],
+          html: '<div style="width:100%;height:100%;border-radius:50%;background-color:#FFD700;box-shadow:0 0 10px #FFD700, 0 0 20px #FFD700;"></div>'
         });
   
         console.log("Adding", pools.length, "markers to map");
@@ -111,6 +117,10 @@ export default function MapVisualization({
         pools.forEach(pool => {
           if (leafletMap.current) {
             try {
+              // Determine if this is a test pool (has testData) or real pool
+              const isTestPool = 'testData' in pool && pool.testData !== null;
+              const poolIcon = isTestPool ? testPoolIcon : realPoolIcon;
+              
               const marker = L.marker([pool.latitude, pool.longitude], { 
                 icon: poolIcon,
                 title: pool.name
@@ -127,9 +137,10 @@ export default function MapVisualization({
                 });
               });
               
-              // Simple popup on hover
+              // Simple popup on hover with color matching marker type
+              const popupColor = isTestPool ? '#FFD700' : '#ff00ea';
               marker.bindPopup(`
-                <div class="font-bold text-[#ff00ea]">${pool.name}</div>
+                <div class="font-bold" style="color: ${popupColor}">${pool.name}</div>
                 <div class="text-xs">${pool.city}, ${pool.country}</div>
               `);
               
@@ -188,7 +199,11 @@ export default function MapVisualization({
         <div className="grid grid-cols-1 gap-1">
           <div className="flex items-center">
             <span className="w-3 h-3 rounded-full bg-[#ff00ea] mr-2" style={{ boxShadow: '0 0 5px #ff00ea' }}></span>
-            <span>Mining Pool Location</span>
+            <span>Live Mining Pool</span>
+          </div>
+          <div className="flex items-center">
+            <span className="w-3 h-3 rounded-full bg-[#FFD700] mr-2" style={{ boxShadow: '0 0 5px #FFD700' }}></span>
+            <span>Test Mining Pool</span>
           </div>
           <div className="flex items-center">
             <span className="w-3 h-3 rounded border border-[#00f3ff] mr-2"></span>
