@@ -245,10 +245,10 @@ export default function Home() {
         {/* Add Pool Button - highest z-index for accessibility */}
         <AddPoolButton />
         
-        {/* Top Rankings Panel */}
+        {/* Top Rankings Panel - always visible */}
         <TopRankingsPanel 
           pools={displayPools} 
-          isVisible={!isPanelOpen} 
+          isVisible={true} 
           onSelectPool={handlePoolSelect}
         />
       </main>

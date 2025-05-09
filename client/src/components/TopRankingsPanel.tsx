@@ -45,7 +45,7 @@ export default function TopRankingsPanel({ pools, isVisible, onSelectPool }: Top
   };
   
   return (
-    <div className="fixed top-20 left-5 z-20 w-96 bg-black bg-opacity-80 backdrop-blur-sm rounded-lg border border-[#00f3ff] shadow-[0_0_10px_#00f3ff] overflow-hidden">
+    <div className="fixed top-20 left-5 z-20 w-80 bg-black bg-opacity-80 backdrop-blur-sm rounded-lg border border-[#00f3ff] shadow-[0_0_10px_#00f3ff] overflow-hidden">
       <div 
         className="flex items-center justify-between px-4 py-3 bg-black bg-opacity-40 cursor-pointer"
         onClick={() => setIsExpanded(!isExpanded)}
