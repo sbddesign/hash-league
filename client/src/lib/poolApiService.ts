@@ -135,14 +135,40 @@ export const updatePoolWithLiveData = async (pool: MiningPool): Promise<MiningPo
     
     // Update hashrate from pool info if available
     if (poolInfo?.userAgents && poolInfo.userAgents.length > 0) {
-      const totalHashRate = poolInfo.userAgents.reduce((sum, agent) => sum + agent.totalHashRate, 0);
+      let totalHashRate = 0;
+      
+      // Sum the hashrates (convert from string if needed)
+      for (const agent of poolInfo.userAgents) {
+        // Handle totalHashRate as string or number
+        const hashRate = typeof agent.totalHashRate === 'string' 
+          ? parseFloat(agent.totalHashRate) 
+          : agent.totalHashRate;
+          
+        if (!isNaN(hashRate)) {
+          totalHashRate += hashRate;
+        }
+      }
+      
       updatedPool.hashrate = formatHashrate(totalHashRate);
       console.log(`Updated ${pool.name} hashrate to ${updatedPool.hashrate}`);
     }
     
     // Update workers count if available
     if (poolInfo?.userAgents) {
-      const totalWorkers = poolInfo.userAgents.reduce((sum, agent) => sum + agent.count, 0);
+      let totalWorkers = 0;
+      
+      // Sum the worker counts (convert from string if needed)
+      for (const agent of poolInfo.userAgents) {
+        // Handle count as string or number
+        const count = typeof agent.count === 'string' 
+          ? parseInt(agent.count, 10) 
+          : agent.count;
+          
+        if (!isNaN(count)) {
+          totalWorkers += count;
+        }
+      }
+      
       updatedPool.workers = totalWorkers;
       console.log(`Updated ${pool.name} workers to ${updatedPool.workers}`);
     }
