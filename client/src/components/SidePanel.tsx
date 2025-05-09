@@ -1,4 +1,4 @@
-import { X, Globe, Twitter, Zap } from 'lucide-react';
+import { X, Globe, Twitter, Zap, MapPin } from 'lucide-react';
 import { MiningPool } from '@shared/schema';
 
 interface SidePanelProps {
@@ -29,7 +29,7 @@ export default function SidePanel({ isOpen, pool, onClose }: SidePanelProps) {
           {!pool ? (
             <div className="text-center py-12">
               <div className="text-[#ff00ea] text-5xl mb-4">
-                <Map className="h-16 w-16 mx-auto" />
+                <MapPin className="h-16 w-16 mx-auto" />
               </div>
               <h3 className="text-xl font-semibold mb-2">No Pool Selected</h3>
               <p className="text-gray-400 mb-4">Click on a marker on the map to view details about a mining pool.</p>
@@ -49,7 +49,7 @@ export default function SidePanel({ isOpen, pool, onClose }: SidePanelProps) {
                 <div className="ml-4">
                   <h2 className="text-2xl font-bold text-white">{pool.name}</h2>
                   <div className="flex items-center text-sm text-gray-300 mt-1">
-                    <Map className="h-4 w-4 text-[#ff00ea] mr-1" />
+                    <MapPin className="h-4 w-4 text-[#ff00ea] mr-1" />
                     <span>{pool.city}, {pool.country}</span>
                   </div>
                 </div>
