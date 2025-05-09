@@ -85,49 +85,65 @@ export default function MapVisualization({
 
   // Add markers when pool data is loaded
   useEffect(() => {
-    if (leafletMap.current && pools && pools.length > 0) {
-      // Clear existing markers
-      Object.values(markers.current).forEach(marker => {
-        if (leafletMap.current) {
-          leafletMap.current.removeLayer(marker);
-        }
-      });
-      markers.current = {};
+    // Wait until map and pools are loaded
+    const addMarkers = () => {
+      console.log("Adding markers, pools length:", pools?.length);
       
-      // Create custom icon for markers
-      const poolIcon = L.divIcon({
-        className: 'pool-marker',
-        iconSize: [20, 20]
-      });
-
-      // Add new markers
-      pools.forEach(pool => {
-        if (leafletMap.current) {
-          const marker = L.marker([pool.latitude, pool.longitude], { 
-            icon: poolIcon,
-            title: pool.name
-          }).addTo(leafletMap.current);
-          
-          marker.on('click', () => {
-            onSelectPool(pool);
-            
-            // Center and zoom to marker
-            leafletMap.current?.setView([pool.latitude, pool.longitude], 5, {
-              animate: true,
-              duration: 1
-            });
-          });
-          
-          // Simple popup on hover
-          marker.bindPopup(`
-            <div class="font-bold text-[#ff00ea]">${pool.name}</div>
-            <div class="text-xs">${pool.city}, ${pool.country}</div>
-          `);
-          
-          markers.current[pool.id] = marker;
-        }
-      });
-    }
+      if (leafletMap.current && pools && pools.length > 0) {
+        // Clear existing markers
+        Object.values(markers.current).forEach(marker => {
+          if (leafletMap.current) {
+            leafletMap.current.removeLayer(marker);
+          }
+        });
+        markers.current = {};
+        
+        // Create custom icon for markers
+        const poolIcon = L.divIcon({
+          className: 'pool-marker',
+          iconSize: [20, 20],
+          html: '<div style="width:100%;height:100%;border-radius:50%;background-color:#ff00ea;box-shadow:0 0 10px #ff00ea, 0 0 20px #ff00ea;"></div>'
+        });
+  
+        console.log("Adding", pools.length, "markers to map");
+        
+        // Add new markers
+        pools.forEach(pool => {
+          if (leafletMap.current) {
+            try {
+              const marker = L.marker([pool.latitude, pool.longitude], { 
+                icon: poolIcon,
+                title: pool.name
+              }).addTo(leafletMap.current);
+              
+              marker.on('click', () => {
+                console.log("Marker clicked:", pool.name);
+                onSelectPool(pool);
+                
+                // Center and zoom to marker
+                leafletMap.current?.setView([pool.latitude, pool.longitude], 5, {
+                  animate: true,
+                  duration: 1
+                });
+              });
+              
+              // Simple popup on hover
+              marker.bindPopup(`
+                <div class="font-bold text-[#ff00ea]">${pool.name}</div>
+                <div class="text-xs">${pool.city}, ${pool.country}</div>
+              `);
+              
+              markers.current[pool.id] = marker;
+            } catch (error) {
+              console.error("Error adding marker:", error);
+            }
+          }
+        });
+      }
+    };
+    
+    // Add markers with a slight delay to ensure map is initialized
+    setTimeout(addMarkers, 2000);
   }, [pools, onSelectPool]);
 
   // Update map view when a pool is selected
