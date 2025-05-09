@@ -9,3 +9,9 @@ Edit the JSON file at: TODO
 ## Development
 
 Run `npm run dev` for hot reload and `npm run build` to deploy.
+
+## Roadmap
+
+- [ ] Public Pool API Support - WIP
+- [ ] Stratum V2 SRI Support
+- [ ] DATUM Gateway API Support
