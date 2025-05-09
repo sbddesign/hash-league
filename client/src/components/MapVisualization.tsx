@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Map, Tag } from 'lucide-react';
-import L from 'leaflet';
 import { MiningPool } from '@shared/schema';
 import { Card, CardContent } from '@/components/ui/card';
+import * as L from 'leaflet';
 
 interface MapVisualizationProps {
   isLoading: boolean;
@@ -21,7 +21,7 @@ export default function MapVisualization({
 }: MapVisualizationProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const leafletMap = useRef<L.Map | null>(null);
-  const markers = useRef<{[key: number]: L.Tag}>({});
+  const markers = useRef<{[key: number]: any}>({});
 
   useEffect(() => {
     // Initialize map

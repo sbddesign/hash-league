@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Header from '@/components/Header';
 import MapVisualization from '@/components/MapVisualization';
@@ -6,12 +6,21 @@ import SidePanel from '@/components/SidePanel';
 import AddPoolButton from '@/components/AddPoolButton';
 import { MiningPool } from '@shared/schema';
 
+// Ensure Leaflet is available globally
+import L from 'leaflet';
+declare global {
+  interface Window {
+    L: any;
+  }
+}
+window.L = L;
+
 export default function Home() {
   const [selectedPool, setSelectedPool] = useState<MiningPool | null>(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   
-  const { data: pools, isLoading, error } = useQuery({
-    queryKey: ['/api/mining-pools'], 
+  const { data: pools, isLoading, error } = useQuery<MiningPool[]>({
+    queryKey: ['/api/mining-pools'],
   });
   
   const handlePoolSelect = (pool: MiningPool) => {
