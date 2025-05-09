@@ -65,19 +65,10 @@ export class MemStorage implements IStorage {
 
   async createMiningPool(insertPool: InsertMiningPool): Promise<MiningPool> {
     const id = this.currentPoolId++;
-    // Create the pool object with all required fields
-    const poolData: MiningPool = {
+    // Ensure that website is not undefined to match the expected type
+    const poolData = {
+      ...insertPool,
       id,
-      name: insertPool.name,
-      country: insertPool.country,
-      city: insertPool.city,
-      latitude: insertPool.latitude,
-      longitude: insertPool.longitude,
-      description: insertPool.description,
-      avatar: insertPool.avatar,
-      createdAt: new Date().toISOString(),
-      
-      // Optional fields with defaults
       website: insertPool.website || null,
       twitter: insertPool.twitter || null,
       nostr: insertPool.nostr || null,
@@ -88,16 +79,16 @@ export class MemStorage implements IStorage {
       poolApiUrl: insertPool.poolApiUrl || null,
       hashrate: insertPool.hashrate || "0 H/s",
       workers: insertPool.workers || 0,
-      hashHistory: [0, 0, 0, 0, 0, 0, 0],
-      testData: insertPool.testData ? {
-        hashrate: insertPool.testData.hashrate,
-        workers: insertPool.testData.workers,
-        hashHistory: [0, 0, 0, 0, 0, 0, 0]
-      } : null,
+      hashHistory: insertPool.hashHistory
+        ? [...insertPool.hashHistory]
+        : [0, 0, 0, 0, 0, 0, 0],
+      testData: insertPool.testData || null,
       rank: insertPool.rank || 0,
     };
-    this.pools.set(id, poolData);
-    return poolData;
+
+    const pool: MiningPool = poolData;
+    this.pools.set(id, pool);
+    return pool;
   }
 
   async updateMiningPool(
@@ -145,14 +136,15 @@ export class MemStorage implements IStorage {
           : currentPool.hashrate,
       workers:
         updates.workers !== undefined ? updates.workers : currentPool.workers,
-      hashHistory: [0, 0, 0, 0, 0, 0, 0],
+      hashHistory:
+        updates.hashHistory !== undefined
+          ? [...updates.hashHistory]
+          : currentPool.hashHistory
+            ? [...currentPool.hashHistory]
+            : [0, 0, 0, 0, 0, 0, 0],
       testData:
-        updates.testData !== undefined 
-          ? (updates.testData ? {
-              hashrate: updates.testData.hashrate,
-              workers: updates.testData.workers,
-              hashHistory: [0, 0, 0, 0, 0, 0, 0]
-            } : null) 
+        updates.testData !== undefined
+          ? updates.testData
           : currentPool.testData,
       rank: updates.rank !== undefined ? updates.rank : currentPool.rank,
     };

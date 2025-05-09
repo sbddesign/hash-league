@@ -345,31 +345,4 @@
   .dark-map-bg {
     background-color: #121212 !important;
   }
-  
-  /* Custom Leaflet popup styles */
-  .custom-dark-popup .leaflet-popup-content-wrapper {
-    background-color: rgba(0, 0, 0, 0.9) !important;
-    color: #ffffff !important;
-    border-radius: 10px !important;
-  }
-  
-  .custom-dark-popup .leaflet-popup-tip {
-    background-color: rgba(0, 0, 0, 0.9) !important;
-  }
-  
-  .custom-dark-popup .leaflet-popup-close-button {
-    color: #ffffff !important;
-  }
-  
-  /* Real pool popup style */
-  .real-pool-popup .leaflet-popup-content-wrapper {
-    border: 1px solid #ff00ea !important;
-    box-shadow: 0 0 10px #ff00ea, 0 0 5px rgba(0, 0, 0, 0.5) !important;
-  }
-  
-  /* Test pool popup style */
-  .test-pool-popup .leaflet-popup-content-wrapper {
-    border: 1px solid #00f3ff !important;
-    box-shadow: 0 0 10px #00f3ff, 0 0 5px rgba(0, 0, 0, 0.5) !important;
-  }
 }
