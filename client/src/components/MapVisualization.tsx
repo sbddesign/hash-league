@@ -21,7 +21,8 @@ export default function MapVisualization({
 }: MapVisualizationProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const leafletMap = useRef<L.Map | null>(null);
-  const markers = useRef<{[key: number]: any}>({});
+  // Store markers with pool ID as the key
+  const markers = useRef<{[key: number]: L.Marker}>({});
 
   useEffect(() => {
     // Function to initialize the map
@@ -186,14 +187,27 @@ export default function MapVisualization({
     setTimeout(addMarkers, 2000);
   }, [pools, onSelectPool]);
 
-  // Update map view when a pool is selected
+  // Update map view when a pool is selected and open its popup
   useEffect(() => {
     if (leafletMap.current && selectedPool) {
+      // Center the map on the selected pool
       leafletMap.current.setView(
         [selectedPool.latitude, selectedPool.longitude], 
         5, 
         { animate: true }
       );
+      
+      // Open the popup for the selected pool
+      const marker = markers.current[selectedPool.id];
+      if (marker) {
+        // Close any other open popups first
+        leafletMap.current.closePopup();
+        
+        // Open this marker's popup
+        setTimeout(() => {
+          marker.openPopup();
+        }, 300); // Small delay to ensure map has finished panning
+      }
     }
   }, [selectedPool]);
 
