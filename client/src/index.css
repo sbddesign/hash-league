@@ -26,22 +26,18 @@
   --radius: 0.5rem;
 
   /* Custom cyberpunk theme colors */
-  --neon-blue: 180 100% 50%;
-  /* #00f3ff */
-  --neon-pink: 301 100% 50%;
-  /* #ff00ea */
-  --neon-green: 108 100% 54%;
-  /* #39FF14 */
-  --cyber-black: 0 0% 0%;
-  /* #000000 */
-
+  --neon-blue: 180 100% 50%;      /* #00f3ff */
+  --neon-pink: 301 100% 50%;      /* #ff00ea */
+  --neon-green: 108 100% 54%;     /* #39FF14 */
+  --cyber-black: 0 0% 0%;         /* #000000 */
+  
   /* Chart colors */
   --chart-1: var(--neon-blue);
   --chart-2: var(--neon-pink);
   --chart-3: var(--neon-green);
   --chart-4: 270 100% 50%;
   --chart-5: 30 100% 50%;
-
+  
   /* Sidebar colors */
   --sidebar-background: 240 10% 3.9%;
   --sidebar-foreground: 0 0% 98%;
@@ -88,7 +84,7 @@
   /* Grid overlay effect for cyberpunk styling */
   .grid-overlay {
     @apply pointer-events-none;
-    background-image:
+    background-image: 
       linear-gradient(to right, rgba(0, 243, 255, 0.1) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(0, 243, 255, 0.1) 1px, transparent 1px);
     background-size: 30px 30px;
@@ -115,7 +111,7 @@
   .font-space {
     font-family: 'Space Grotesk', sans-serif;
   }
-
+  
   .font-jetbrains {
     font-family: 'JetBrains Mono', monospace;
   }
@@ -147,7 +143,7 @@
     cursor: pointer !important;
     pointer-events: auto !important;
   }
-
+  
   .pool-marker div {
     width: 100%;
     height: 100%;
@@ -156,7 +152,7 @@
     box-shadow: 0 0 10px #ff00ea, 0 0 20px #ff00ea;
     transition: all 0.3s;
   }
-
+  
   .pool-marker:hover div {
     transform: scale(1.2);
     box-shadow: 0 0 15px #ff00ea, 0 0 30px #ff00ea;
@@ -164,33 +160,31 @@
 
   /* Custom Leaflet styles */
   .leaflet-container {
-    background-color: #121a20 !important;
-    /* Blue-tinted dark background */
+    background-color: #121a20 !important; /* Blue-tinted dark background */
     width: 100%;
     height: 100vh;
     position: relative;
     z-index: 10;
   }
-
+  
   /* Ensure loading tiles have dark background */
   .leaflet-tile-container,
   .leaflet-tile,
   .leaflet-image-layer,
   .leaflet-tile-pane {
-    background-color: #121a20 !important;
-    /* Slightly blue-tinted dark background for oceans */
+    background-color: #121a20 !important; /* Slightly blue-tinted dark background for oceans */
   }
-
+  
   .leaflet-tile-pane {
     filter: hue-rotate(180deg) invert(0.95) contrast(1.5) saturate(1.2) brightness(1.2);
   }
-
+  
   /* Make sure non-loaded tiles have dark background */
   .leaflet-tile-loaded,
   .leaflet-tile-loading {
     background-color: #121a20 !important;
   }
-
+  
   .leaflet-popup-content-wrapper {
     background-color: rgba(0, 0, 0, 0.8) !important;
     color: white !important;
@@ -198,21 +192,20 @@
     box-shadow: 0 0 10px #00f3ff !important;
     border-radius: 5px !important;
   }
-
+  
   .leaflet-popup-tip {
     background-color: #00f3ff !important;
   }
-
+  
   /* Custom zoom control styling */
   .leaflet-control-zoom {
     border: 1px solid #00f3ff !important;
     background-color: rgba(0, 0, 0, 0.8) !important;
     box-shadow: 0 0 10px rgba(0, 243, 255, 0.5) !important;
-    margin: 70px 10px 10px 10px !important;
-    /* Top, Right, Bottom, Left - add top margin to clear header */
+    margin: 70px 10px 10px 10px !important; /* Top, Right, Bottom, Left - add top margin to clear header */
     z-index: 1000 !important;
   }
-
+  
   .leaflet-control-zoom-in,
   .leaflet-control-zoom-out {
     background-color: #1a1a1a !important;
@@ -225,7 +218,7 @@
     font-size: 18px !important;
     font-weight: bold !important;
   }
-
+  
   .leaflet-control-zoom-in:hover,
   .leaflet-control-zoom-out:hover {
     background-color: #333 !important;
@@ -242,10 +235,10 @@
     overflow: hidden;
     background-color: #121a20 !important;
   }
-
+  
   #map {
-    width: 100%;
-    height: 100%;
+    width: 100%; 
+    height: 100%; 
     z-index: 10;
     position: absolute;
     top: 0;
@@ -258,16 +251,14 @@
     0% {
       box-shadow: 0 0 0 0 rgba(57, 255, 20, 0.7);
     }
-
     70% {
       box-shadow: 0 0 0 15px rgba(57, 255, 20, 0);
     }
-
     100% {
       box-shadow: 0 0 0 0 rgba(57, 255, 20, 0);
     }
   }
-
+  
   .pulse-animation {
     animation: pulse 2s infinite;
   }
@@ -277,7 +268,7 @@
     position: relative;
     overflow: hidden;
   }
-
+  
   .hash-stat::after {
     content: '';
     position: absolute;
@@ -287,37 +278,37 @@
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.8), transparent);
   }
-
+  
   /* Custom scrollbar styles */
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
   }
-
+  
   .custom-scrollbar::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.2);
     border-radius: 10px;
   }
-
+  
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background: rgba(0, 243, 255, 0.7);
     border-radius: 10px;
   }
-
+  
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: rgba(0, 243, 255, 1);
   }
-
+  
   /* Dark map background to prevent white flashing during loading */
   .dark-map-bg {
     background-color: #121a20 !important;
   }
-
+  
   /* Improve map text readability */
   .leaflet-container .leaflet-overlay-pane path,
   .leaflet-container .leaflet-marker-pane * {
     filter: drop-shadow(0px 0px 1px rgba(0, 243, 255, 0.8));
   }
-
+  
   .leaflet-container .leaflet-tile-pane .leaflet-layer text,
   .leaflet-container .leaflet-pane text {
     font-weight: 600 !important;
