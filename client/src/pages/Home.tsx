@@ -29,8 +29,32 @@ export default function Home() {
     if (pools && pools.length > 0) {
       const fetchLiveData = async () => {
         try {
+          // Update pools with live data
           const updated = await updateAllPools(pools);
           setUpdatedPools(updated);
+          
+          // Persist updated data to server for each pool
+          updated.forEach(async (pool) => {
+            try {
+              await fetch(`/api/mining-pools/${pool.id}/update`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  hashrate: pool.hashrate,
+                  rank: pool.rank,
+                  workers: pool.workers,
+                  hashHistory: pool.hashHistory,
+                  lastUpdated: new Date().toISOString(),
+                  difficulty: pool.difficulty,
+                  networkHashrate: pool.networkHashrate
+                }),
+              });
+            } catch (error) {
+              console.error(`Failed to persist pool updates for ${pool.name}:`, error);
+            }
+          });
         } catch (err) {
           console.error("Error updating pools with live data:", err);
         }
@@ -50,8 +74,25 @@ export default function Home() {
     if (selectedPool && selectedPool.poolApiUrl) {
       const updateSelectedPool = async () => {
         try {
+          // Get updated data for the selected pool
           const updatedPool = await updatePoolWithLiveData(selectedPool);
           setSelectedPool(updatedPool);
+          
+          // Persist changes to server
+          await fetch(`/api/mining-pools/${updatedPool.id}/update`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              hashrate: updatedPool.hashrate,
+              workers: updatedPool.workers,
+              hashHistory: updatedPool.hashHistory,
+              lastUpdated: new Date().toISOString(),
+              difficulty: updatedPool.difficulty,
+              networkHashrate: updatedPool.networkHashrate
+            }),
+          });
         } catch (err) {
           console.error("Error updating selected pool:", err);
         }
@@ -137,7 +178,7 @@ export default function Home() {
         <MapVisualization 
           isLoading={isLoading} 
           error={error as Error}
-          pools={pools as MiningPool[]} 
+          pools={displayPools as MiningPool[]} 
           onSelectPool={handlePoolSelect}
           selectedPool={selectedPool}
         />
@@ -154,7 +195,7 @@ export default function Home() {
         
         {/* Top Rankings Panel */}
         <TopRankingsPanel 
-          pools={pools} 
+          pools={displayPools} 
           isVisible={!isPanelOpen} 
           onSelectPool={handlePoolSelect}
         />

@@ -9,6 +9,7 @@ export interface IStorage {
   getAllMiningPools(): Promise<MiningPool[]>;
   getMiningPool(id: number): Promise<MiningPool | undefined>;
   createMiningPool(pool: InsertMiningPool): Promise<MiningPool>;
+  updateMiningPool(id: number, updates: Partial<MiningPool>): Promise<MiningPool>;
 }
 
 export class MemStorage implements IStorage {
@@ -54,9 +55,50 @@ export class MemStorage implements IStorage {
 
   async createMiningPool(insertPool: InsertMiningPool): Promise<MiningPool> {
     const id = this.currentPoolId++;
-    const pool: MiningPool = { ...insertPool, id };
+    // Ensure that website is not undefined to match the expected type
+    const poolData = {
+      ...insertPool, 
+      id,
+      website: insertPool.website || null,
+      twitter: insertPool.twitter || null,
+      nostr: insertPool.nostr || null,
+      difficulty: insertPool.difficulty || null,
+      networkHashrate: insertPool.networkHashrate || null,
+      lastUpdated: insertPool.lastUpdated || null,
+      isActive: insertPool.isActive === undefined ? true : insertPool.isActive,
+      poolApiUrl: insertPool.poolApiUrl || null
+    };
+    
+    const pool: MiningPool = poolData;
     this.pools.set(id, pool);
     return pool;
+  }
+  
+  async updateMiningPool(id: number, updates: Partial<MiningPool>): Promise<MiningPool> {
+    const currentPool = this.pools.get(id);
+    if (!currentPool) {
+      throw new Error(`Mining pool with id ${id} not found`);
+    }
+    
+    // Apply updates to the existing pool
+    const updatedPool: MiningPool = {
+      ...currentPool,
+      ...updates,
+      // Ensure that optional fields that might be undefined are set to null
+      website: updates.website !== undefined ? updates.website : currentPool.website,
+      twitter: updates.twitter !== undefined ? updates.twitter : currentPool.twitter,
+      nostr: updates.nostr !== undefined ? updates.nostr : currentPool.nostr,
+      difficulty: updates.difficulty !== undefined ? updates.difficulty : currentPool.difficulty,
+      networkHashrate: updates.networkHashrate !== undefined ? updates.networkHashrate : currentPool.networkHashrate,
+      lastUpdated: updates.lastUpdated !== undefined ? updates.lastUpdated : currentPool.lastUpdated,
+      isActive: updates.isActive !== undefined ? updates.isActive : currentPool.isActive,
+      poolApiUrl: updates.poolApiUrl !== undefined ? updates.poolApiUrl : currentPool.poolApiUrl
+    };
+    
+    // Update the pool in storage
+    this.pools.set(id, updatedPool);
+    
+    return updatedPool;
   }
 
   private initializeSampleData() {

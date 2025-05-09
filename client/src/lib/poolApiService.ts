@@ -60,12 +60,13 @@ export const formatHashrate = (hashrate: number): string => {
   return `${(hashrate / 1000000000000000).toFixed(2)} PH/s`;
 };
 
-// Fetch pool info from API
+// Fetch pool info from API via proxy
 export const fetchPoolInfo = async (poolApiUrl: string): Promise<PoolInfoResponse | null> => {
   if (!poolApiUrl) return null;
   
   try {
-    const response = await fetchWithTimeout(`${poolApiUrl}/api/info`);
+    // Use our server proxy endpoint to avoid CORS issues
+    const response = await fetchWithTimeout(`/api/proxy/pool-info?url=${encodeURIComponent(poolApiUrl)}`);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -76,12 +77,13 @@ export const fetchPoolInfo = async (poolApiUrl: string): Promise<PoolInfoRespons
   }
 };
 
-// Fetch chart data from API
+// Fetch chart data from API via proxy
 export const fetchPoolChart = async (poolApiUrl: string): Promise<PoolChartResponse | null> => {
   if (!poolApiUrl) return null;
   
   try {
-    const response = await fetchWithTimeout(`${poolApiUrl}/api/info/chart`);
+    // Use our server proxy endpoint to avoid CORS issues
+    const response = await fetchWithTimeout(`/api/proxy/pool-chart?url=${encodeURIComponent(poolApiUrl)}`);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -92,12 +94,13 @@ export const fetchPoolChart = async (poolApiUrl: string): Promise<PoolChartRespo
   }
 };
 
-// Fetch network information from API
+// Fetch network information from API via proxy
 export const fetchNetworkInfo = async (poolApiUrl: string): Promise<NetworkInfoResponse | null> => {
   if (!poolApiUrl) return null;
   
   try {
-    const response = await fetchWithTimeout(`${poolApiUrl}/api/network`);
+    // Use our server proxy endpoint to avoid CORS issues
+    const response = await fetchWithTimeout(`/api/proxy/network-info?url=${encodeURIComponent(poolApiUrl)}`);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }

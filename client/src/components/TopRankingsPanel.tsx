@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronUp, ChevronDown, Trophy } from 'lucide-react';
+import { ChevronUp, ChevronDown, Trophy, Wifi } from 'lucide-react';
 import { MiningPool } from '@shared/schema';
 
 interface TopRankingsPanelProps {
@@ -17,6 +17,27 @@ export default function TopRankingsPanel({ pools, isVisible, onSelectPool }: Top
   const topPools = [...pools]
     .sort((a, b) => a.rank - b.rank)
     .slice(0, 10);
+    
+  // Determine API status indicator color
+  const getApiStatusColor = (pool: MiningPool): string => {
+    if (!pool.poolApiUrl) {
+      return "text-gray-500";
+    }
+    
+    if (pool.lastUpdated) {
+      const lastUpdate = new Date(pool.lastUpdated);
+      const now = new Date();
+      const diffMinutes = (now.getTime() - lastUpdate.getTime()) / (1000 * 60);
+      
+      if (diffMinutes < 5) {
+        return "text-green-500";
+      } else if (diffMinutes < 15) {
+        return "text-yellow-500";
+      }
+    }
+    
+    return "text-red-500";
+  };
   
   return (
     <div className="fixed top-20 left-5 z-20 w-96 bg-black bg-opacity-80 backdrop-blur-sm rounded-lg border border-[#00f3ff] shadow-[0_0_10px_#00f3ff] overflow-hidden">
@@ -68,7 +89,14 @@ export default function TopRankingsPanel({ pools, isVisible, onSelectPool }: Top
                         alt={pool.name} 
                         className="w-6 h-6 rounded-full mr-2 border border-[#ff00ea]" 
                       />
-                      <span className="truncate max-w-[120px]">{pool.name}</span>
+                      <div className="flex flex-col">
+                        <span className="truncate max-w-[120px]">{pool.name}</span>
+                        {pool.poolApiUrl && (
+                          <div className="flex items-center text-xs">
+                            <Wifi className={`h-3 w-3 ${getApiStatusColor(pool)} mr-1`} />
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </td>
                   <td className="px-4 py-3 text-right font-jetbrains text-[#00f3ff]">
