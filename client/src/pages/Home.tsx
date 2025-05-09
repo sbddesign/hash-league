@@ -24,8 +24,24 @@ export default function Home() {
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
   
+  // Define the type for mempool.space API response
+  interface GlobalHashrateResponse {
+    currentHashrate: number;
+    currentDifficulty: number;
+    hashrates: Array<{
+      timestamp: number;
+      avgHashrate: number;
+    }>;
+    difficulty: Array<{
+      time: number;
+      height: number;
+      difficulty: number;
+      adjustment: number;
+    }>;
+  }
+  
   // Query for global hashrate from mempool.space API
-  const { data: globalHashrateData } = useQuery({
+  const { data: globalHashrateData } = useQuery<GlobalHashrateResponse>({
     queryKey: ['/api/global-hashrate'],
     staleTime: 1000 * 60 * 1, // 1 minute
     refetchInterval: 1000 * 60 * 1, // Refetch every 1 minute
@@ -128,14 +144,23 @@ export default function Home() {
 
   // Format global hashrate from mempool.space API
   const formatGlobalHashrate = (): string => {
-    if (globalHashrateData && globalHashrateData.currentHashrate) {
-      try {
-        // The hashrate is returned in H/s, convert to PH/s (1 PH/s = 1,000,000,000,000,000 H/s)
-        const hashratePH = globalHashrateData.currentHashrate / 1_000_000_000_000_000;
-        return hashratePH.toFixed(2) + ' PH/s';
-      } catch (err) {
-        console.error("Error formatting global hashrate:", err);
+    if (globalHashrateData) {
+      console.log("Global hashrate data received:", globalHashrateData);
+      
+      if (globalHashrateData.currentHashrate) {
+        try {
+          // The hashrate is returned in H/s, convert to PH/s (1 PH/s = 1,000,000,000,000,000 H/s)
+          const hashratePH = globalHashrateData.currentHashrate / 1_000_000_000_000_000;
+          console.log(`Converting global hashrate: ${globalHashrateData.currentHashrate} H/s → ${hashratePH.toFixed(2)} PH/s`);
+          return hashratePH.toFixed(2) + ' PH/s';
+        } catch (err) {
+          console.error("Error formatting global hashrate:", err);
+        }
+      } else {
+        console.log("No currentHashrate property in the response");
       }
+    } else {
+      console.log("No global hashrate data received yet");
     }
     
     // Fallback to calculating from local pools if no global data
