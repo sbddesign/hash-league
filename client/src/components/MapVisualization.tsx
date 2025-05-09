@@ -165,15 +165,16 @@ export default function MapVisualization({
               // Dark mode popup with color matching marker type
               const popupColor = isTestPool ? '#00f3ff' : '#ff00ea';
               marker.bindPopup(`
-                <div style="
+                <div class="popup-content" style="
                   background-color: #121212; 
                   color: white;
                   border: 1px solid ${popupColor};
-                  border-radius: 4px;
-                  padding: 4px 2px;
-                  box-shadow: 0 0 10px ${popupColor}44;
+                  border-radius: 6px;
+                  padding: 8px 10px;
+                  box-shadow: 0 0 10px ${popupColor};
+                  min-width: 150px;
                 ">
-                  <div class="font-bold" style="color: ${popupColor}">${pool.name}</div>
+                  <div style="font-weight: bold; color: ${popupColor}; margin-bottom: 2px;">${pool.name}</div>
                   <div style="color: #cccccc; font-size: 12px;">${pool.city}, ${pool.country}</div>
                 </div>
               `, {

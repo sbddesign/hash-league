@@ -187,10 +187,10 @@
   
   /* Override Leaflet popup styling for dark theme */
   .leaflet-popup-content-wrapper {
-    background-color: transparent !important;
+    background-color: #121212 !important;
     color: white !important;
     border: none !important;
-    box-shadow: none !important;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.8) !important;
     border-radius: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
@@ -201,15 +201,18 @@
     padding: 0 !important;
   }
   
-  .leaflet-popup-tip-container {
+  /* Remove all unnecessary popup elements */
+  .leaflet-popup-tip-container,
+  .leaflet-popup-tip {
     display: none !important; /* Remove the popup arrow */
   }
   
+  /* Style the close button */
   .leaflet-popup-close-button {
     color: white !important;
     font-size: 16px !important;
-    top: 8px !important;
-    right: 8px !important;
+    top: 4px !important;
+    right: 4px !important;
     width: 20px !important;
     height: 20px !important;
     background: rgba(0, 0, 0, 0.5) !important;
@@ -228,6 +231,20 @@
   /* Position the popup slightly above the marker */
   .leaflet-popup {
     margin-bottom: 25px !important;
+  }
+  
+  /* Style for dark mode popup class */
+  .dark-mode-popup .leaflet-popup-content-wrapper {
+    background-color: #121212 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border-radius: 6px !important;
+  }
+  
+  /* Ensure the popup content fills the wrapper */
+  .popup-content {
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
   
   /* Custom zoom control styling */
