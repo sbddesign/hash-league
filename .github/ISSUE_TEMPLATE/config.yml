@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Hash League GitHub Discussions
+    url: https://github.com/hashleague/mining-pools/discussions
+    about: Please ask and answer questions through GitHub Discussions
