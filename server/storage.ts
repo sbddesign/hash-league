@@ -79,6 +79,9 @@ export class MemStorage implements IStorage {
       poolApiUrl: insertPool.poolApiUrl || null,
       hashrate: insertPool.hashrate || '0 H/s',
       workers: insertPool.workers || 0,
+      hashHistory: insertPool.hashHistory ? [...insertPool.hashHistory] : [0,0,0,0,0,0,0],
+      testData: insertPool.testData || null,
+      rank: insertPool.rank || 0,
     };
 
     const pool: MiningPool = poolData;
@@ -133,6 +136,18 @@ export class MemStorage implements IStorage {
         updates.workers !== undefined
           ? updates.workers
           : currentPool.workers,
+      hashHistory:
+        updates.hashHistory !== undefined
+          ? [...updates.hashHistory]
+          : (currentPool.hashHistory ? [...currentPool.hashHistory] : [0,0,0,0,0,0,0]),
+      testData:
+        updates.testData !== undefined
+          ? updates.testData
+          : currentPool.testData,
+      rank:
+        updates.rank !== undefined
+          ? updates.rank
+          : currentPool.rank,
     };
 
     // Update the pool in storage
