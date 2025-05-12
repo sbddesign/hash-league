@@ -24,14 +24,7 @@ assignees: ''
 
 ### Technical Information
 
-**Hashrate**:
-<!-- Current total hashrate in PH/s, e.g. 15.7 PH/s -->
-
-**Worker Count**:
-<!-- Number of active mining rigs/workers, e.g. 108 -->
-
-**Pool Rank**:
-<!-- If known, or leave blank for us to determine -->
+Public Pool API link:
 
 ### Description
 
