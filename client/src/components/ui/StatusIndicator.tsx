@@ -1,6 +1,6 @@
 import { Wifi, Clock } from 'lucide-react';
 import { MiningPool } from '@shared/schema';
-import { formatUpdateTime } from '@/lib/utils';
+import { formatUpdateTime, getPoolApiStatus } from '@/lib/utils';
 
 interface StatusIndicatorProps {
   pool: MiningPool;
@@ -9,29 +9,7 @@ interface StatusIndicatorProps {
 }
 
 export default function StatusIndicator({ pool, showTimestamp = false, size = 'md' }: StatusIndicatorProps) {
-  // Determine API status indicator
-  const getApiStatus = () => {
-    if (!pool?.poolApiUrl) {
-      return { color: 'text-gray-500', text: 'No API URL' };
-    }
-    
-    if (pool.lastUpdated) {
-      const lastUpdate = new Date(pool.lastUpdated);
-      const now = new Date();
-      const diffMinutes = (now.getTime() - lastUpdate.getTime()) / (1000 * 60);
-      
-      if (diffMinutes < 5) {
-        return { color: 'text-green-500', text: 'Connected' };
-      } else if (diffMinutes < 15) {
-        return { color: 'text-yellow-500', text: 'Slow' };
-      }
-    }
-    
-    return { color: 'text-red-500', text: 'Offline' };
-  };
-
-  
-  const poolStatus = getApiStatus();
+  const poolStatus = getPoolApiStatus(pool);
   const iconSize = size === 'sm' ? 'h-3 w-3' : 'h-4 w-4';
   const textSize = size === 'sm' ? 'text-xs' : 'text-sm';
   

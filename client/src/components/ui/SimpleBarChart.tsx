@@ -1,5 +1,6 @@
 import React from 'react';
 import { DAYS_OF_WEEK } from '@/lib/constants';
+import { calculateTrend } from '@/lib/utils';
 
 interface SimpleBarChartProps {
   data: number[] | undefined;
@@ -14,25 +15,7 @@ export default function SimpleBarChart({
   barColor = '#00f3ff',
   trendLabel = true
 }: SimpleBarChartProps) {
-  // Display appropriate message for trend
-  const getTrend = (chartData: number[] | undefined) => {
-    if (!chartData || chartData.length < 2) return { text: 'No data', color: 'text-gray-400' };
-    
-    const firstValue = chartData[0];
-    const lastValue = chartData[chartData.length - 1];
-    
-    if (lastValue > firstValue) {
-      const percentChange = ((lastValue - firstValue) / firstValue * 100).toFixed(1);
-      return { text: `+${percentChange}%`, color: 'text-[#39FF14]' };
-    } else if (lastValue < firstValue) {
-      const percentChange = ((firstValue - lastValue) / firstValue * 100).toFixed(1);
-      return { text: `-${percentChange}%`, color: 'text-red-500' };
-    }
-    
-    return { text: 'Stable', color: 'text-yellow-500' };
-  };
-  
-  const trend = data ? getTrend(data) : { text: 'No data', color: 'text-gray-400' };
+  const trend = calculateTrend(data);
   
   return (
     <div className="bg-black bg-opacity-50 p-4 rounded-lg border border-[#00f3ff]">

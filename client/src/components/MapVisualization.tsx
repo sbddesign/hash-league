@@ -110,44 +110,65 @@ export default function MapVisualization({
     };
   }, []);
 
-  // Add markers when pool data is loaded
+  // Create markers only once and update their properties when needed
   useEffect(() => {
     // Wait until map and pools are loaded
-    const addMarkers = () => {
-      console.log("Adding markers, pools length:", pools?.length);
+    const updateMarkers = () => {
+      console.log("Updating markers, pools length:", pools?.length);
       
       if (leafletMap.current && pools && pools.length > 0) {
-        // Clear existing markers
-        Object.values(markers.current).forEach(marker => {
-          if (leafletMap.current) {
-            leafletMap.current.removeLayer(marker);
-          }
-        });
-        markers.current = {};
-        
-        // Create custom icons for markers
-        const realPoolIcon = L.divIcon({
+        // Create marker icons (defined once)
+        const createRealPoolIcon = () => L.divIcon({
           className: 'pool-marker',
           iconSize: [20, 20],
           html: `<div style="width:100%;height:100%;border-radius:50%;background-color:${COLORS.neonPink};box-shadow:0 0 10px ${COLORS.neonPink}, 0 0 20px ${COLORS.neonPink};"></div>`
         });
         
-        const testPoolIcon = L.divIcon({
+        const createTestPoolIcon = () => L.divIcon({
           className: 'pool-marker',
           iconSize: [20, 20],
           html: `<div style="width:100%;height:100%;border-radius:50%;background-color:${COLORS.neonBlue};box-shadow:0 0 10px ${COLORS.neonBlue}, 0 0 20px ${COLORS.neonBlue};"></div>`
         });
-  
-        console.log("Adding", pools.length, "markers to map");
         
-        // Add new markers
+        // Track which pools are currently on the map for cleanup
+        const currentPoolIds = new Set<number>();
+        
+        // Update existing or add new markers
         pools.forEach(pool => {
-          if (leafletMap.current) {
-            try {
-              // Determine if this is a test pool (has testData) or real pool
-              const isTestPool = 'testData' in pool && pool.testData !== null;
-              const poolIcon = isTestPool ? testPoolIcon : realPoolIcon;
+          if (!leafletMap.current) return;
+          
+          try {
+            currentPoolIds.add(pool.id);
+            const isTestPool = 'testData' in pool && pool.testData !== null;
+            const poolIcon = isTestPool ? createTestPoolIcon() : createRealPoolIcon();
+            const popupColor = isTestPool ? COLORS.neonBlue : COLORS.neonPink;
+            
+            // Check if marker already exists
+            if (markers.current[pool.id]) {
+              // Just update the marker position if needed
+              const existingMarker = markers.current[pool.id];
+              const currentLatLng = existingMarker.getLatLng();
               
+              // Only update if position changed
+              if (currentLatLng.lat !== pool.latitude || currentLatLng.lng !== pool.longitude) {
+                existingMarker.setLatLng([pool.latitude, pool.longitude]);
+              }
+              
+              // Update popup content
+              existingMarker.unbindPopup();
+              existingMarker.bindPopup(`
+                <div style="text-align: center;">
+                  <div style="font-weight: bold; color: ${popupColor};">${pool.name}</div>
+                  <div style="color: white; font-size: 12px;">${pool.city}, ${pool.country}</div>
+                </div>
+              `, {
+                className: 'custom-popup',
+                closeButton: true,
+                autoClose: false,
+                closeOnEscapeKey: true
+              });
+            } else {
+              // Create new marker if it doesn't exist
               const marker = L.marker([pool.latitude, pool.longitude], { 
                 icon: poolIcon,
                 title: pool.name
@@ -164,8 +185,7 @@ export default function MapVisualization({
                 });
               });
               
-              // Simple dark popup with colored text
-              const popupColor = isTestPool ? COLORS.neonBlue : COLORS.neonPink;
+              // Add popup to new marker
               marker.bindPopup(`
                 <div style="text-align: center;">
                   <div style="font-weight: bold; color: ${popupColor};">${pool.name}</div>
@@ -174,21 +194,32 @@ export default function MapVisualization({
               `, {
                 className: 'custom-popup',
                 closeButton: true,
-                autoClose: false,    // Prevent auto-closing when clicking elsewhere
+                autoClose: false,
                 closeOnEscapeKey: true
               });
               
               markers.current[pool.id] = marker;
-            } catch (error) {
-              console.error("Error adding marker:", error);
             }
+          } catch (error) {
+            console.error("Error updating marker for pool:", pool.name, error);
+          }
+        });
+        
+        // Remove markers that are no longer in the pools data
+        Object.keys(markers.current).forEach(id => {
+          const poolId = parseInt(id);
+          if (!currentPoolIds.has(poolId) && leafletMap.current) {
+            leafletMap.current.removeLayer(markers.current[poolId]);
+            delete markers.current[poolId];
           }
         });
       }
     };
     
-    // Add markers with a slight delay to ensure map is initialized
-    setTimeout(addMarkers, 2000);
+    // Update markers with a slight delay to ensure map is initialized
+    const timerId = setTimeout(updateMarkers, 1000);
+    
+    return () => clearTimeout(timerId);
   }, [pools, onSelectPool]);
 
   // Update map view when a pool is selected and open its popup
