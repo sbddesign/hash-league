@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
-import { X, Globe, Twitter, Zap, MapPin, Link2, Server, Cpu, Calendar, Wifi, Activity, Clock } from 'lucide-react';
+import { X, Globe, Twitter, Zap, MapPin, Link2, Server, Cpu, Calendar, Activity } from 'lucide-react';
 import { MiningPool } from '@shared/schema';
 import { updatePoolWithLiveData } from '@/lib/poolApiService';
-import { DAYS_OF_WEEK } from '@/lib/constants';
+import { DAYS_OF_WEEK, COLORS } from '@/lib/constants';
+import StatusIndicator from '@/components/ui/StatusIndicator';
+import HashrateStat from '@/components/ui/HashrateStat';
+import SimpleBarChart from '@/components/ui/SimpleBarChart';
 
 interface SidePanelProps {
   isOpen: boolean;
@@ -18,79 +21,9 @@ export default function SidePanel({ isOpen, pool, onClose }: SidePanelProps) {
     return null;
   }
   
-  // Format timestamp to readable format
-  const formatUpdateTime = (timestamp: string | null | undefined) => {
-    if (!timestamp) return "Not available";
-    
-    try {
-      const date = new Date(timestamp);
-      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    } catch (error) {
-      return "Invalid time";
-    }
-  };
   
-  // Format large numbers for better readability
-  const formatNumber = (num: number | string | undefined): string => {
-    if (num === undefined || num === null) return "N/A";
-    
-    const parsedNum = typeof num === 'string' ? parseFloat(num) : num;
-    if (isNaN(parsedNum)) return "N/A";
-    
-    if (parsedNum >= 1000000000) {
-      return (parsedNum / 1000000000).toFixed(2) + 'B';
-    } else if (parsedNum >= 1000000) {
-      return (parsedNum / 1000000).toFixed(2) + 'M';
-    } else if (parsedNum >= 1000) {
-      return (parsedNum / 1000).toFixed(2) + 'K';
-    } else {
-      return parsedNum.toFixed(0);
-    }
-  };
   
-  // Determine API status indicator
-  const getApiStatus = () => {
-    if (!pool?.poolApiUrl) {
-      return { color: 'text-gray-500', text: 'No API URL' };
-    }
-    
-    if (pool.lastUpdated) {
-      const lastUpdate = new Date(pool.lastUpdated);
-      const now = new Date();
-      const diffMinutes = (now.getTime() - lastUpdate.getTime()) / (1000 * 60);
-      
-      if (diffMinutes < 5) {
-        return { color: 'text-green-500', text: 'Connected' };
-      } else if (diffMinutes < 15) {
-        return { color: 'text-yellow-500', text: 'Slow' };
-      }
-    }
-    
-    return { color: 'text-red-500', text: 'Offline' };
-  };
-  
-  // Get status of the mining pool
-  const poolStatus = getApiStatus();
 
-  // Display appropriate message for hashrate trend
-  const getHashrateTrend = (hashHistory: number[] | undefined) => {
-    if (!hashHistory || hashHistory.length < 2) return { text: 'No data', color: 'text-gray-400' };
-    
-    const firstValue = hashHistory[0];
-    const lastValue = hashHistory[hashHistory.length - 1];
-    
-    if (lastValue > firstValue) {
-      const percentChange = ((lastValue - firstValue) / firstValue * 100).toFixed(1);
-      return { text: `+${percentChange}%`, color: 'text-[#39FF14]' };
-    } else if (lastValue < firstValue) {
-      const percentChange = ((firstValue - lastValue) / firstValue * 100).toFixed(1);
-      return { text: `-${percentChange}%`, color: 'text-red-500' };
-    }
-    
-    return { text: 'Stable', color: 'text-yellow-500' };
-  };
-  
-  const hashrateTrend = pool?.hashHistory ? getHashrateTrend(pool.hashHistory) : { text: 'No data', color: 'text-gray-400' };
 
   return (
     <div 
@@ -135,15 +68,8 @@ export default function SidePanel({ isOpen, pool, onClose }: SidePanelProps) {
                   
                   {/* API Status Indicator */}
                   {pool.poolApiUrl && (
-                    <div className="flex items-center text-xs mt-1">
-                      <Wifi className={`h-3 w-3 ${poolStatus.color} mr-1`} />
-                      <span className={`${poolStatus.color}`}>{poolStatus.text}</span>
-                      {pool.lastUpdated && (
-                        <span className="text-gray-500 ml-2">
-                          <Clock className="h-3 w-3 inline mr-1" />
-                          {formatUpdateTime(pool.lastUpdated)}
-                        </span>
-                      )}
+                    <div className="mt-1">
+                      <StatusIndicator pool={pool} showTimestamp={true} size="sm" />
                     </div>
                   )}
                 </div>
@@ -151,18 +77,9 @@ export default function SidePanel({ isOpen, pool, onClose }: SidePanelProps) {
               
               {/* Pool Stats */}
               <div className="grid grid-cols-3 gap-3 mb-6">
-                <div className="hash-stat bg-black bg-opacity-50 p-3 rounded-lg border border-[#00f3ff]">
-                  <div className="text-xs text-gray-400 mb-1 font-jetbrains">HASHRATE</div>
-                  <div className="text-lg font-bold text-[#00f3ff] font-jetbrains">{pool.hashrate}</div>
-                </div>
-                <div className="hash-stat bg-black bg-opacity-50 p-3 rounded-lg border border-[#00f3ff]">
-                  <div className="text-xs text-gray-400 mb-1 font-jetbrains">RANK</div>
-                  <div className="text-lg font-bold text-[#00f3ff] font-jetbrains">#{pool.rank}</div>
-                </div>
-                <div className="hash-stat bg-black bg-opacity-50 p-3 rounded-lg border border-[#00f3ff]">
-                  <div className="text-xs text-gray-400 mb-1 font-jetbrains">WORKERS</div>
-                  <div className="text-lg font-bold text-[#00f3ff] font-jetbrains">{pool.workers}</div>
-                </div>
+                <HashrateStat label="HASHRATE" value={pool.hashrate} borderColor={COLORS.neonBlue} />
+                <HashrateStat label="RANK" value={`#${pool.rank}`} borderColor={COLORS.neonBlue} />
+                <HashrateStat label="WORKERS" value={pool.workers} borderColor={COLORS.neonBlue} />
               </div>
               
               {/* Network Stats (if available) */}
@@ -171,16 +88,18 @@ export default function SidePanel({ isOpen, pool, onClose }: SidePanelProps) {
                   <h3 className="text-sm text-gray-400 uppercase tracking-wider mb-2 font-jetbrains">Network</h3>
                   <div className="grid grid-cols-2 gap-3">
                     {pool.networkHashrate && (
-                      <div className="hash-stat bg-black bg-opacity-50 p-3 rounded-lg border border-[#39FF14]">
-                        <div className="text-xs text-gray-400 mb-1 font-jetbrains">NETWORK HASHRATE</div>
-                        <div className="text-md font-bold text-[#39FF14] font-jetbrains">{pool.networkHashrate}</div>
-                      </div>
+                      <HashrateStat 
+                        label="NETWORK HASHRATE" 
+                        value={pool.networkHashrate} 
+                        borderColor={COLORS.neonGreen} 
+                      />
                     )}
                     {pool.difficulty && (
-                      <div className="hash-stat bg-black bg-opacity-50 p-3 rounded-lg border border-[#39FF14]">
-                        <div className="text-xs text-gray-400 mb-1 font-jetbrains">DIFFICULTY</div>
-                        <div className="text-md font-bold text-[#39FF14] font-jetbrains">{parseFloat(pool.difficulty).toExponential(2)}</div>
-                      </div>
+                      <HashrateStat 
+                        label="DIFFICULTY" 
+                        value={parseFloat(pool.difficulty).toExponential(2)} 
+                        borderColor={COLORS.neonGreen} 
+                      />
                     )}
                   </div>
                 </div>
@@ -252,50 +171,10 @@ export default function SidePanel({ isOpen, pool, onClose }: SidePanelProps) {
               {pool.hashHistory && (
                 <div>
                   <h3 className="text-sm text-gray-400 uppercase tracking-wider mb-2 font-jetbrains">Hashrate History</h3>
-                  <div className="bg-black bg-opacity-50 p-4 rounded-lg border border-[#00f3ff]">
-                    <div className="flex justify-between items-center mb-2">
-                      <div className="text-xs text-gray-400">Last 7 Days</div>
-                      <div className={`text-xs ${hashrateTrend.color}`}>
-                        {hashrateTrend.text}
-                      </div>
-                    </div>
-                    
-                    {/* Simple chart representation with bars */}
-                    <div className="h-24 flex items-end justify-between">
-                      {(pool.hashHistory && pool.hashHistory.length > 0) ? (
-                        // If we have history data, show the bars
-                        pool.hashHistory.map((value, index) => {
-                          // Find the maximum value for scaling
-                          const maxValue = Math.max(...pool.hashHistory || [1]);
-                          // Calculate height as percentage
-                          const height = `${(value / maxValue) * 100}%`;
-                          
-                          return (
-                            <div 
-                              key={index} 
-                              className="w-[12%] bg-[#00f3ff] bg-opacity-40 hover:bg-opacity-60 transition-all rounded-t" 
-                              style={{ height }}
-                            ></div>
-                          );
-                        })
-                      ) : (
-                        // If no history data, show empty placeholder bars
-                        Array(7).fill(0).map((_, index) => (
-                          <div 
-                            key={index} 
-                            className="w-[12%] bg-gray-800 bg-opacity-40 rounded-t"
-                            style={{ height: '10%' }}
-                          ></div>
-                        ))
-                      )}
-                    </div>
-                    
-                    <div className="flex justify-between mt-2 text-xs text-gray-500 font-jetbrains">
-                      {DAYS_OF_WEEK.map((day, index) => (
-                        <div key={index}>{day}</div>
-                      ))}
-                    </div>
-                  </div>
+                  <SimpleBarChart 
+                    data={pool.hashHistory} 
+                    barColor={COLORS.neonBlue} 
+                  />
                 </div>
               )}
             </div>

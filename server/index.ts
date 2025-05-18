@@ -56,15 +56,27 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000
+  // Try to serve the app on port 5000, fallback to 3000 if needed
   // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-  });
+  const port = process.env.PORT || 5000;
+  
+  try {
+    server.listen({
+      port: Number(port),
+      host: "localhost", // Changed from 0.0.0.0 to localhost
+    }, () => {
+      log(`serving on http://localhost:${port}`);
+    });
+  } catch (error) {
+    // If first attempt fails, try alternate port
+    const fallbackPort = 3000;
+    log(`Failed to bind to port ${port}, trying ${fallbackPort} instead`);
+    
+    server.listen({
+      port: fallbackPort,
+      host: "localhost",
+    }, () => {
+      log(`serving on http://localhost:${fallbackPort}`);
+    });
+  }
 })();

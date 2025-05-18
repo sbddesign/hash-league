@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { ChevronUp, ChevronDown, Trophy, Wifi } from 'lucide-react';
+import { ChevronUp, ChevronDown, Trophy } from 'lucide-react';
 import { MiningPool } from '@shared/schema';
+import StatusIndicator from '@/components/ui/StatusIndicator';
 
 interface TopRankingsPanelProps {
   pools: MiningPool[] | undefined;
@@ -23,26 +24,6 @@ export default function TopRankingsPanel({ pools, isVisible, onSelectPool }: Top
     })
     .slice(0, 10);
     
-  // Determine API status indicator color
-  const getApiStatusColor = (pool: MiningPool): string => {
-    if (!pool.poolApiUrl) {
-      return "text-gray-500";
-    }
-    
-    if (pool.lastUpdated) {
-      const lastUpdate = new Date(pool.lastUpdated);
-      const now = new Date();
-      const diffMinutes = (now.getTime() - lastUpdate.getTime()) / (1000 * 60);
-      
-      if (diffMinutes < 5) {
-        return "text-green-500";
-      } else if (diffMinutes < 15) {
-        return "text-yellow-500";
-      }
-    }
-    
-    return "text-red-500";
-  };
   
   return (
     <div className="fixed top-20 left-5 z-20 w-80 bg-black bg-opacity-80 backdrop-blur-sm rounded-lg border border-[#00f3ff] shadow-[0_0_10px_#00f3ff] overflow-hidden">
@@ -97,9 +78,7 @@ export default function TopRankingsPanel({ pools, isVisible, onSelectPool }: Top
                       <div className="flex flex-col">
                         <span className="truncate max-w-[120px]">{pool.name}</span>
                         {pool.poolApiUrl && (
-                          <div className="flex items-center text-xs">
-                            <Wifi className={`h-3 w-3 ${getApiStatusColor(pool)} mr-1`} />
-                          </div>
+                          <StatusIndicator pool={pool} size="sm" />
                         )}
                       </div>
                     </div>
