@@ -317,10 +317,11 @@ export default function MapVisualization({
       <Map
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
         initialViewState={{
-          longitude: -122.4,
-          latitude: 37.8,
-          zoom: 14
+          longitude: 0,
+          latitude: 0,
+          zoom: 1.5
         }}
+        projection="mercator"
         style={{width: '100%', height: '100%'}}
         mapStyle="mapbox://styles/funwithmapping/cmauj4mcu00lp01r2a1ksa01j"
       />
