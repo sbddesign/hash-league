@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { Map, Tag } from 'lucide-react';
+// import { Map, Tag } from 'lucide-react';
 import { MiningPool } from '@shared/schema';
 import { Card, CardContent } from '@/components/ui/card';
 import { MAP_CONFIG, COLORS } from '@/lib/constants';
 import * as L from 'leaflet';
+import Map from 'react-map-gl/mapbox';
 
 interface MapVisualizationProps {
   isLoading: boolean;
@@ -311,26 +312,41 @@ export default function MapVisualization({
     );
   }
 
-  return (
-    <div className="map-container dark-map-bg">
-      <div id="map" ref={mapRef} className="dark-map-bg"></div>
-      
-      {/* Legend */}
-      <div className="absolute bottom-5 left-5 z-30 bg-black bg-opacity-70 backdrop-blur-sm p-3 rounded-lg border-glow-blue text-xs font-jetbrains hidden md:block">
-        <h3 className="mb-2 uppercase tracking-wider font-semibold" style={{ color: COLORS.neonBlue }}>Map Legend</h3>
-        <div className="grid grid-cols-1 gap-1">
-          <div className="flex items-center">
-            <span className="w-3 h-3 rounded-full mr-2" 
-                  style={{ backgroundColor: COLORS.neonPink, boxShadow: `0 0 5px ${COLORS.neonPink}` }}></span>
-            <span>Live Mining Pool</span>
-          </div>
-          <div className="flex items-center">
-            <span className="w-3 h-3 rounded-full mr-2" 
-                  style={{ backgroundColor: COLORS.neonBlue, boxShadow: `0 0 5px ${COLORS.neonBlue}` }}></span>
-            <span>Unclaimed Territory</span>
-          </div>
-        </div>
-      </div>
-    </div>
+  return(
+    <>
+      <Map
+        mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+        initialViewState={{
+          longitude: -122.4,
+          latitude: 37.8,
+          zoom: 14
+        }}
+        style={{width: '100%', height: '100%'}}
+        mapStyle="mapbox://styles/funwithmapping/cmauj4mcu00lp01r2a1ksa01j"
+      />
+    </>
   );
+
+  // return (
+  //   <div className="map-container dark-map-bg">
+  //     <div id="map" ref={mapRef} className="dark-map-bg"></div>
+      
+  //     {/* Legend */}
+  //     <div className="absolute bottom-5 left-5 z-30 bg-black bg-opacity-70 backdrop-blur-sm p-3 rounded-lg border-glow-blue text-xs font-jetbrains hidden md:block">
+  //       <h3 className="mb-2 uppercase tracking-wider font-semibold" style={{ color: COLORS.neonBlue }}>Map Legend</h3>
+  //       <div className="grid grid-cols-1 gap-1">
+  //         <div className="flex items-center">
+  //           <span className="w-3 h-3 rounded-full mr-2" 
+  //                 style={{ backgroundColor: COLORS.neonPink, boxShadow: `0 0 5px ${COLORS.neonPink}` }}></span>
+  //           <span>Live Mining Pool</span>
+  //         </div>
+  //         <div className="flex items-center">
+  //           <span className="w-3 h-3 rounded-full mr-2" 
+  //                 style={{ backgroundColor: COLORS.neonBlue, boxShadow: `0 0 5px ${COLORS.neonBlue}` }}></span>
+  //           <span>Unclaimed Territory</span>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 }
