@@ -1,19 +1,20 @@
-import { useState, useEffect } from 'react';
-import { X, Globe, Twitter, Zap, MapPin, Link2, Server, Cpu, Calendar, Activity } from 'lucide-react';
+import { useState } from 'react';
+import { X, Globe, Twitter, Zap, MapPin, Server } from 'lucide-react';
 import { MiningPool } from '@shared/schema';
-import { updatePoolWithLiveData } from '@/lib/poolApiService';
-import { DAYS_OF_WEEK, COLORS } from '@/lib/constants';
+import { COLORS } from '@/lib/constants';
 import StatusIndicator from '@/components/ui/StatusIndicator';
 import HashrateStat from '@/components/ui/HashrateStat';
 import SimpleBarChart from '@/components/ui/SimpleBarChart';
+import FaqContent from '@/components/FaqContent';
 
 interface SidePanelProps {
   isOpen: boolean;
   pool: MiningPool | null;
   onClose: () => void;
+  showFaq?: boolean;
 }
 
-export default function SidePanel({ isOpen, pool, onClose }: SidePanelProps) {
+export default function SidePanel({ isOpen, pool, onClose, showFaq = false }: SidePanelProps) {
   const [isLiveDataFetching, setIsLiveDataFetching] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   
