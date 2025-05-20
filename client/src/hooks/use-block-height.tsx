@@ -30,12 +30,12 @@ export function useBlockHeight(): UseBlockHeightResult {
         if (!isNaN(newHeight)) {
           // Check if this is a new block
           if (previousHeightRef.current !== null && newHeight > previousHeightRef.current) {
-            // Show toast notification for new block
+            // Show toast notification for new block (5 second duration)
             toast({
               title: "New Block Mined!",
               description: `#${newHeight}`,
               variant: "default",
-              duration: 5000,
+              duration: 5000, // 5 seconds
             });
             
             // Play sound effect using the sound utility
