@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import MapVisualization from '@/components/MapVisualization';
 import SidePanel from '@/components/SidePanel';
-import AddPoolButton from '@/components/AddPoolButton';
-import FaqButton from '@/components/FaqButton';
+import ActionButtons from '@/components/ActionButtons';
 import TopRankingsPanel from '@/components/TopRankingsPanel';
 import AppLayout from '@/components/layout/AppLayout';
 import { usePoolData } from '@/hooks/use-pool-data';
@@ -64,11 +63,8 @@ export default function Home() {
         showFaq={showFaq}
       />
       
-      {/* Add Pool Button - highest z-index for accessibility */}
-      <AddPoolButton />
-      
-      {/* FAQ Button - highest z-index for accessibility */}
-      <FaqButton onClick={handleFaqClick} />
+      {/* Action Buttons - positioned in bottom right */}
+      <ActionButtons onFaqClick={handleFaqClick} />
       
       {/* Top Rankings Panel - always visible */}
       <TopRankingsPanel 
