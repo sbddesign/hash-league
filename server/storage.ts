@@ -191,6 +191,19 @@ export class MemStorage implements IStorage {
         poolApiUrl: "http://pool.atlbitlab.com:3334",
         isActive: true,
       },
+      {
+        name: "Miami BTC Community",
+        country: "United States",
+        city: "Miami",
+        latitude: 25.7617,
+        longitude: -80.1918,
+        description:
+          "Keeping it real and hashing in the sunshine state. We got our own private table at the club girl.",
+        avatar: "/bitcoin-blue.png",
+        createdAt: "2024-10-01 00:00:00",
+        isActive: true,
+        poolApiUrl: "http://miami.pool.atlbitlab.com:3334",
+      },
     ];
 
     // Test mining pools with static data
@@ -235,22 +248,6 @@ export class MemStorage implements IStorage {
         longitude: -104.9903,
         description: "Where's Denver's hashrate?",
         avatar: "/bitcoin-red.png",
-        createdAt: "2024-10-01 00:00:00",
-        isActive: true,
-        testData: {
-          hashrate: "0 MH/s",
-          workers: 0,
-          hashHistory: [5, 4, 3, 2, 1, 0, 0],
-        },
-      },
-      {
-        name: "Miami Community",
-        country: "United States",
-        city: "Miami",
-        latitude: 25.7617,
-        longitude: -80.1918,
-        description: "Where's Miami's hashrate?",
-        avatar: "/bitcoin-blue.png",
         createdAt: "2024-10-01 00:00:00",
         isActive: true,
         testData: {
