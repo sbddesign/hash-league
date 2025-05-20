@@ -1,6 +1,7 @@
 // Sound file paths for the external MP3 files
 const BLOCK_SOUND_FILE_PATH = "/sounds/coins.mp3";
-const HASHRATE_SOUND_FILE_PATH = "/sounds/charging.mp3";
+const HASHRATE_INCREASE_SOUND_FILE_PATH = "/sounds/charging.mp3";
+const HASHRATE_DECREASE_SOUND_FILE_PATH = "/sounds/power-down.mp3";
 
 /**
  * Plays the sound effect for new block notifications
@@ -10,8 +11,12 @@ export function playLaserSound(volume = 0.5): void {
   playSound(BLOCK_SOUND_FILE_PATH, volume);
 }
 
-export function playHashrateSound(volume = 0.5): void {
-  playSound(HASHRATE_SOUND_FILE_PATH, volume);
+export function playHashrateIncreaseSound(volume = 0.5): void {
+  playSound(HASHRATE_INCREASE_SOUND_FILE_PATH, volume);
+}
+
+export function playHashrateDecreaseSound(volume = 0.5): void {
+  playSound(HASHRATE_DECREASE_SOUND_FILE_PATH, volume);
 }
 
 function playSound(soundFilePath: string, volume = 0.5): void {

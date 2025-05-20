@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { MiningPool } from '@shared/schema';
-import { playHashrateSound } from '@/components/sound-utils';
+import { playHashrateIncreaseSound, playHashrateDecreaseSound } from '@/components/sound-utils';
 import { toast } from '@/hooks/use-toast';
 import { formatHashrate } from '@/lib/poolApiService';
 
@@ -9,6 +9,7 @@ interface PoolHashrateChange {
   previousHashrate: string | null;
   currentHashrate: string | null;
   percentChange: number;
+  changeType: 'increase' | 'decrease' | 'unchanged';
 }
 
 export function usePoolHashrateTracking(pools: MiningPool[] | undefined) {
@@ -79,34 +80,48 @@ export function usePoolHashrateTracking(pools: MiningPool[] | undefined) {
       
       // Calculate percent change if both values are valid
       let percentChange = 0;
+      let changeType: 'increase' | 'decrease' | 'unchanged' = 'unchanged';
+      
       if (prevValue > 0 && currValue > 0) {
         percentChange = ((currValue - prevValue) / prevValue) * 100;
+        if (percentChange > 1) {
+          changeType = 'increase';
+        } else if (percentChange < -1) { // More than 1% decrease
+          changeType = 'decrease';
+          // Make percent change positive for display
+          percentChange = Math.abs(percentChange);
+        }
       }
       
       // Store current hashrate for next comparison
       previousPoolHashrates.current.set(pool.id, currentHashrate);
       
-      // If there was an increase, notify
-      if (percentChange > 1) {  // More than 1% increase
+      // If there was a significant change (increase or decrease), notify
+      if (changeType !== 'unchanged') {
         // Create hashrate change object
         const change: PoolHashrateChange = {
           pool,
           previousHashrate,
           currentHashrate,
-          percentChange
+          percentChange,
+          changeType
         };
         
-        // Update state and show notification
+        // Update state
         setHashrateChanges(prev => [...prev.slice(-9), change]);
         
-        // Play sound
-        playHashrateSound(0.4);
+        // Play appropriate sound based on change type
+        if (changeType === 'increase') {
+          playHashrateIncreaseSound(0.4);
+        } else {
+          playHashrateDecreaseSound(0.4);
+        }
         
-        // Show toast
+        // Show toast with appropriate message
         toast({
-          title: `Hashrate Increase for ${pool.name}`,
-          description: `Hashrate increased from ${previousHashrate || 'N/A'} to ${currentHashrate || 'N/A'} (${percentChange.toFixed(1)}%)`,
-          variant: "default",
+          title: `Hashrate ${changeType === 'increase' ? 'Increase' : 'Decrease'} for ${pool.name}`,
+          description: `Hashrate ${changeType === 'increase' ? 'increased' : 'decreased'} from ${previousHashrate || 'N/A'} to ${currentHashrate || 'N/A'} (${percentChange.toFixed(1)}%)`,
+          variant: changeType === 'increase' ? "default" : "destructive",
           duration: 5000,
         });
       }
