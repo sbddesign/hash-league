@@ -366,3 +366,7 @@
     background-color: #121212 !important;
   }
 }
+
+.mapboxgl-popup {
+  z-index: 20 !important;
+}
