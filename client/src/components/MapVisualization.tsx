@@ -116,10 +116,11 @@ export default function MapVisualization({
                 onClose={() => setPopupPoolId(null)}
                 focusAfterOpen={false}
                 style={{ zIndex: 1000 }}
+                className=""
               >
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontWeight: 'bold', color: popupColor }}>{pool.name}</div>
-                  <div style={{ color: 'white', fontSize: 12 }}>{pool.city}, {pool.country}</div>
+                <div className="text-center px-6 py-1">
+                  <h3 className="text-[16px] font-semibold">{pool.name}</h3>
+                  <p className="">{pool.city}, {pool.country}</p>
                 </div>
               </Popup>
             )}
