@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { MiningPool } from '@shared/schema';
 import { Card, CardContent } from '@/components/ui/card';
 import { MAP_CONFIG, COLORS } from '@/lib/constants';
-import Map, { Marker, Popup } from 'react-map-gl/mapbox';
+import Map, { Marker, Popup, MapRef } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 interface MapVisualizationProps {
@@ -22,6 +22,7 @@ export default function MapVisualization({
   selectedPool 
 }: MapVisualizationProps) {
   const [popupPoolId, setPopupPoolId] = useState<number | null>(null);
+  const mapRef = useRef<MapRef>(null);
 
   // Open popup when selectedPool changes
   useEffect(() => {
@@ -70,6 +71,7 @@ export default function MapVisualization({
         </div>
       </div>
       <Map
+        ref={mapRef}
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
         initialViewState={{
           longitude: -95.7129, // Center of US
@@ -109,6 +111,15 @@ export default function MapVisualization({
                 e.originalEvent.stopPropagation();
                 setPopupPoolId(pool.id);
                 onSelectPool(pool);
+                // Center the map on this marker
+                if (mapRef.current) {
+                  const currentZoom = mapRef.current.getZoom();
+                  mapRef.current.flyTo({
+                    center: [longitude, latitude],
+                    zoom: currentZoom,
+                    duration: 1000
+                  });
+                }
               }}
             >
               <div
