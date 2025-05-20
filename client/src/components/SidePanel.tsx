@@ -40,7 +40,9 @@ export default function SidePanel({ isOpen, pool, onClose, showFaq = false }: Si
         </button>
         
         <div className="mt-2">
-          {!pool ? (
+          {showFaq ? (
+            <FaqContent />
+          ) : !pool ? (
             <div className="text-center py-12">
               <div className="text-[#ff00ea] text-5xl mb-4">
                 <MapPin className="h-16 w-16 mx-auto" />
@@ -78,9 +80,9 @@ export default function SidePanel({ isOpen, pool, onClose, showFaq = false }: Si
               
               {/* Pool Stats */}
               <div className="grid grid-cols-3 gap-3 mb-6">
-                <HashrateStat label="HASHRATE" value={pool.hashrate} borderColor={COLORS.neonBlue} />
-                <HashrateStat label="RANK" value={`#${pool.rank}`} borderColor={COLORS.neonBlue} />
-                <HashrateStat label="WORKERS" value={pool.workers} borderColor={COLORS.neonBlue} />
+                <HashrateStat label="HASHRATE" value={pool.hashrate || 'N/A'} borderColor={COLORS.neonBlue} />
+                <HashrateStat label="RANK" value={pool.rank ? `#${pool.rank}` : 'N/A'} borderColor={COLORS.neonBlue} />
+                <HashrateStat label="WORKERS" value={pool.workers || 'N/A'} borderColor={COLORS.neonBlue} />
               </div>
               
               {/* Network Stats (if available) */}
@@ -98,7 +100,9 @@ export default function SidePanel({ isOpen, pool, onClose, showFaq = false }: Si
                     {pool.difficulty && (
                       <HashrateStat 
                         label="DIFFICULTY" 
-                        value={parseFloat(pool.difficulty).toExponential(2)} 
+                        value={typeof pool.difficulty === 'string' && !isNaN(parseFloat(pool.difficulty)) 
+                          ? parseFloat(pool.difficulty).toExponential(2) 
+                          : 'N/A'} 
                         borderColor={COLORS.neonGreen} 
                       />
                     )}

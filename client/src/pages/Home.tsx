@@ -2,6 +2,7 @@ import { useState } from 'react';
 import MapVisualization from '@/components/MapVisualization';
 import SidePanel from '@/components/SidePanel';
 import AddPoolButton from '@/components/AddPoolButton';
+import FaqButton from '@/components/FaqButton';
 import TopRankingsPanel from '@/components/TopRankingsPanel';
 import AppLayout from '@/components/layout/AppLayout';
 import { usePoolData } from '@/hooks/use-pool-data';
@@ -12,6 +13,7 @@ import 'leaflet/dist/leaflet.css';
 
 export default function Home() {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [showFaq, setShowFaq] = useState(false);
   
   // Use our custom hook for pool data management
   const {
@@ -27,11 +29,17 @@ export default function Home() {
   
   const handlePoolSelect = (pool: MiningPool) => {
     selectPool(pool);
+    setShowFaq(false);
     setIsPanelOpen(true);
   };
   
   const handlePanelClose = () => {
     setIsPanelOpen(false);
+  };
+  
+  const handleFaqClick = () => {
+    setShowFaq(true);
+    setIsPanelOpen(true);
   };
 
   return (
@@ -53,10 +61,14 @@ export default function Home() {
         isOpen={isPanelOpen} 
         pool={selectedPool}
         onClose={handlePanelClose}
+        showFaq={showFaq}
       />
       
       {/* Add Pool Button - highest z-index for accessibility */}
       <AddPoolButton />
+      
+      {/* FAQ Button - highest z-index for accessibility */}
+      <FaqButton onClick={handleFaqClick} />
       
       {/* Top Rankings Panel - always visible */}
       <TopRankingsPanel 
