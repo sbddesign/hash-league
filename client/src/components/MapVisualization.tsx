@@ -52,104 +52,99 @@ export default function MapVisualization({
   }
 
   return(
-    <Map
-      mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
-      initialViewState={{
-        longitude: -95.7129, // Center of US
-        latitude: 37.0902,
-        zoom: 3
-      }}
-      projection="mercator"
-      style={{width: '100%', height: '100%'}}
-      // mapStyle="mapbox://styles/mapbox/dark-v11"
-      mapStyle="mapbox://styles/funwithmapping/cmauj4mcu00lp01r2a1ksa01j"
-    >
-      {pools && pools.map(pool => {
-        // Debug: log coordinates for each marker
-        console.log(`Marker for ${pool.name}: lat=${pool.latitude}, lng=${pool.longitude}`);
-        
-        // Ensure coordinates are numbers
-        const latitude = Number(pool.latitude);
-        const longitude = Number(pool.longitude);
-        
-        // Validate coordinates
-        if (isNaN(latitude) || isNaN(longitude)) {
-          console.error(`Invalid coordinates for ${pool.name}: lat=${pool.latitude}, lng=${pool.longitude}`);
-          return null;
-        }
-        
-        const isTestPool = 'testData' in pool && pool.testData !== null;
-        const markerColor = isTestPool ? COLORS.neonBlue : COLORS.neonPink;
-        const popupColor = markerColor;
-        
-        return (
-          <Marker
-            key={pool.id}
-            longitude={longitude}
-            latitude={latitude}
-            anchor="center"
-            onClick={e => {
-              e.originalEvent.stopPropagation();
-              setPopupPoolId(pool.id);
-              onSelectPool(pool);
-            }}
-          >
-            <div
-              style={{
-                width: 20,
-                height: 20,
-                borderRadius: '50%',
-                backgroundColor: markerColor,
-                boxShadow: `0 0 10px ${markerColor}, 0 0 20px ${markerColor}`,
-                border: '2px solid #222',
-                cursor: 'pointer',
+    <>
+      {/* Legend */}
+      <div className="absolute bottom-10 left-5 z-30 bg-black bg-opacity-70 backdrop-blur-sm p-3 rounded-lg border-glow-blue text-xs font-jetbrains hidden md:block">
+        <h3 className="mb-2 uppercase tracking-wider font-semibold" style={{ color: COLORS.neonBlue }}>Map Legend</h3>
+        <div className="grid grid-cols-1 gap-1">
+          <div className="flex items-center">
+            <span className="w-3 h-3 rounded-full mr-2" 
+                  style={{ backgroundColor: COLORS.neonPink, boxShadow: `0 0 5px ${COLORS.neonPink}` }}></span>
+            <span>Live Mining Pool</span>
+          </div>
+          <div className="flex items-center">
+            <span className="w-3 h-3 rounded-full mr-2" 
+                  style={{ backgroundColor: COLORS.neonBlue, boxShadow: `0 0 5px ${COLORS.neonBlue}` }}></span>
+            <span>Unclaimed Territory</span>
+          </div>
+        </div>
+      </div>
+      <Map
+        mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+        initialViewState={{
+          longitude: -95.7129, // Center of US
+          latitude: 37.0902,
+          zoom: 3
+        }}
+        projection="mercator"
+        style={{width: '100%', height: '100%'}}
+        // mapStyle="mapbox://styles/mapbox/dark-v11"
+        mapStyle="mapbox://styles/funwithmapping/cmauj4mcu00lp01r2a1ksa01j"
+      >
+        {pools && pools.map(pool => {
+          // Debug: log coordinates for each marker
+          console.log(`Marker for ${pool.name}: lat=${pool.latitude}, lng=${pool.longitude}`);
+          
+          // Ensure coordinates are numbers
+          const latitude = Number(pool.latitude);
+          const longitude = Number(pool.longitude);
+          
+          // Validate coordinates
+          if (isNaN(latitude) || isNaN(longitude)) {
+            console.error(`Invalid coordinates for ${pool.name}: lat=${pool.latitude}, lng=${pool.longitude}`);
+            return null;
+          }
+          
+          const isTestPool = 'testData' in pool && pool.testData !== null;
+          const markerColor = isTestPool ? COLORS.neonBlue : COLORS.neonPink;
+          const popupColor = markerColor;
+          
+          return (
+            <Marker
+              key={pool.id}
+              longitude={longitude}
+              latitude={latitude}
+              anchor="center"
+              onClick={e => {
+                e.originalEvent.stopPropagation();
+                setPopupPoolId(pool.id);
+                onSelectPool(pool);
               }}
-              title={pool.name}
-            />
-            {popupPoolId === pool.id && (
-              <Popup
-                longitude={longitude}
-                latitude={latitude}
-                anchor="top"
-                closeButton={true}
-                closeOnClick={false}
-                onClose={() => setPopupPoolId(null)}
-                focusAfterOpen={false}
-                style={{ zIndex: 1000 }}
-                className=""
-              >
-                <div className="text-center px-6 py-1">
-                  <h3 className="text-[16px] font-semibold">{pool.name}</h3>
-                  <p className="">{pool.city}, {pool.country}</p>
-                </div>
-              </Popup>
-            )}
-          </Marker>
-        );
-      })}
-    </Map>
+            >
+              <div
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: '50%',
+                  backgroundColor: markerColor,
+                  boxShadow: `0 0 10px ${markerColor}, 0 0 20px ${markerColor}`,
+                  border: '2px solid #222',
+                  cursor: 'pointer',
+                }}
+                title={pool.name}
+              />
+              {popupPoolId === pool.id && (
+                <Popup
+                  longitude={longitude}
+                  latitude={latitude}
+                  anchor="top"
+                  closeButton={true}
+                  closeOnClick={false}
+                  onClose={() => setPopupPoolId(null)}
+                  focusAfterOpen={false}
+                  style={{ zIndex: 1000 }}
+                  className=""
+                >
+                  <div className="text-center px-6 py-1">
+                    <h3 className="text-[16px] font-semibold">{pool.name}</h3>
+                    <p className="">{pool.city}, {pool.country}</p>
+                  </div>
+                </Popup>
+              )}
+            </Marker>
+          );
+        })}
+      </Map>
+    </>
   );
-
-  // return (
-  //   <div className="map-container dark-map-bg">
-  //     <div id="map" ref={mapRef} className="dark-map-bg"></div>
-      
-  //     {/* Legend */}
-  //     <div className="absolute bottom-5 left-5 z-30 bg-black bg-opacity-70 backdrop-blur-sm p-3 rounded-lg border-glow-blue text-xs font-jetbrains hidden md:block">
-  //       <h3 className="mb-2 uppercase tracking-wider font-semibold" style={{ color: COLORS.neonBlue }}>Map Legend</h3>
-  //       <div className="grid grid-cols-1 gap-1">
-  //         <div className="flex items-center">
-  //           <span className="w-3 h-3 rounded-full mr-2" 
-  //                 style={{ backgroundColor: COLORS.neonPink, boxShadow: `0 0 5px ${COLORS.neonPink}` }}></span>
-  //           <span>Live Mining Pool</span>
-  //         </div>
-  //         <div className="flex items-center">
-  //           <span className="w-3 h-3 rounded-full mr-2" 
-  //                 style={{ backgroundColor: COLORS.neonBlue, boxShadow: `0 0 5px ${COLORS.neonBlue}` }}></span>
-  //           <span>Unclaimed Territory</span>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
 }
