@@ -5,6 +5,7 @@ import ActionButtons from '@/components/ActionButtons';
 import TopRankingsPanel from '@/components/TopRankingsPanel';
 import AppLayout from '@/components/layout/AppLayout';
 import { usePoolData } from '@/hooks/use-pool-data';
+import { usePoolHashrateTracking } from '@/hooks/use-pool-hashrate-tracking';
 import { MiningPool } from '@shared/schema';
 
 // Import Leaflet CSS file - this is necessary for the map to display properly
@@ -25,6 +26,9 @@ export default function Home() {
     handlePoolSelect: selectPool,
     setSelectedPool
   } = usePoolData();
+  
+  // Track hashrate changes of top 3 pools and notify when they increase
+  const { hashrateChanges } = usePoolHashrateTracking(displayPools);
   
   const handlePoolSelect = (pool: MiningPool) => {
     selectPool(pool);

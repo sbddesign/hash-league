@@ -71,30 +71,8 @@ export function usePoolHashrateTracking(pools: MiningPool[] | undefined) {
       const currentHashrate = pool.hashrate;
       
       // Convert hashrates to values for comparison
-      const parseHashrateValue = (hashrate: string | null): number => {
-        if (!hashrate) return 0;
-        
-        // Extract numeric value and unit from hashrate string
-        const match = hashrate.match(/^([\d.]+)\s*([A-Za-z]+)/);
-        if (!match) return 0;
-        
-        const value = parseFloat(match[1]);
-        const unit = match[2].toUpperCase();
-        
-        // Convert to a common unit (TH/s)
-        switch(unit) {
-          case 'PH/S':
-            return value * 1000;
-          case 'TH/S':
-            return value;
-          case 'GH/S':
-            return value / 1000;
-          case 'MH/S':
-            return value / 1000000;
-          default:
-            return value;
-        }
-      };
+      // Reuse the same function for parsing hashrate value
+      const parseHashrateValue = parseHashrateForSorting;
       
       const prevValue = parseHashrateValue(previousHashrate);
       const currValue = parseHashrateValue(currentHashrate);
