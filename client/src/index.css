@@ -75,6 +75,18 @@
   --ring: 180 100% 50%;
 }
 
+.mapboxgl-popup-content {
+  @apply bg-black rounded-lg;
+}
+
+.mapboxgl-popup-tip {
+  @apply border-b-black !important;
+}
+
+.mapboxgl-popup-close-button {
+  @apply text-lg p-1 leading-[18px];
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -353,4 +365,8 @@
   .dark-map-bg {
     background-color: #121212 !important;
   }
+}
+
+.mapboxgl-popup {
+  z-index: 20 !important;
 }

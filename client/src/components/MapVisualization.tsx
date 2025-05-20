@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { Map, Tag } from 'lucide-react';
+// import { Map, Tag } from 'lucide-react';
 import { MiningPool } from '@shared/schema';
 import { Card, CardContent } from '@/components/ui/card';
 import { MAP_CONFIG, COLORS } from '@/lib/constants';
-import * as L from 'leaflet';
+import Map, { Marker, Popup, MapRef } from 'react-map-gl/mapbox';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 interface MapVisualizationProps {
   isLoading: boolean;
@@ -20,273 +21,13 @@ export default function MapVisualization({
   onSelectPool, 
   selectedPool 
 }: MapVisualizationProps) {
-  const mapRef = useRef<HTMLDivElement>(null);
-  const leafletMap = useRef<L.Map | null>(null);
-  // Store markers with pool ID as the key
-  const markers = useRef<{[key: number]: L.Marker}>({});
+  const [popupPoolId, setPopupPoolId] = useState<number | null>(null);
+  const mapRef = useRef<MapRef>(null);
 
+  // Open popup when selectedPool changes
   useEffect(() => {
-    // Function to initialize the map
-    const initMap = () => {
-      if (mapRef.current && !leafletMap.current) {
-        try {
-          console.log("Initializing map...");
-          // Ensure the element is not null
-          const mapEl = mapRef.current;
-          if (!mapEl) {
-            console.error("Map element is null");
-            return;
-          }
-          
-          // Create the map instance
-          const map = L.map(mapEl, {
-            center: MAP_CONFIG.initialView,
-            zoom: MAP_CONFIG.defaultZoom,
-            minZoom: MAP_CONFIG.minZoom,
-            maxZoom: MAP_CONFIG.maxZoom,
-            zoomControl: false,
-            attributionControl: false,
-          });
-          
-          leafletMap.current = map;
-    
-          // Add dark mode tile layer
-          L.tileLayer(MAP_CONFIG.tileLayerUrl, {
-            attribution: MAP_CONFIG.attribution
-          }).addTo(map);
-    
-          // Add zoom control in the top right with custom styling
-          // Remove existing zoom control if any
-          const existingControls = document.querySelectorAll('.leaflet-control-zoom');
-          existingControls.forEach(el => el.remove());
-          
-          // Create a custom position for zoom controls below the header
-          // Add new zoom control with custom position
-          const zoomControl = L.control.zoom({
-            position: 'topright',
-            zoomInTitle: 'Zoom in',
-            zoomOutTitle: 'Zoom out'
-          });
-          
-          zoomControl.addTo(map);
-          
-          // Force re-render of controls
-          setTimeout(() => {
-            // Apply custom styling to zoom controls
-            document.querySelectorAll('.leaflet-control-zoom-in, .leaflet-control-zoom-out').forEach(el => {
-              if (el instanceof HTMLElement) {
-                el.style.backgroundColor = '#1a1a1a';
-                el.style.color = COLORS.neonBlue;
-                el.style.borderColor = '#333';
-                // Make control more visible
-                el.style.fontSize = '18px';
-                el.style.fontWeight = 'bold';
-              }
-            });
-          }, 100);
-          
-          // Force a resize to ensure the map fills the container
-          setTimeout(() => {
-            if (map) {
-              console.log("Invalidating map size...");
-              map.invalidateSize();
-            }
-          }, 200);
-        } catch (error) {
-          console.error("Error initializing map:", error);
-        }
-      }
-    };
-
-    // Wait for DOM to be fully rendered
-    setTimeout(initMap, 500);
-
-    return () => {
-      // Clean up on unmount
-      if (leafletMap.current) {
-        leafletMap.current.remove();
-        leafletMap.current = null;
-      }
-    };
-  }, []);
-
-  // Create markers only once and update their properties when needed
-  useEffect(() => {
-    // Wait until map and pools are loaded
-    const updateMarkers = () => {
-      console.log("Updating markers, pools length:", pools?.length);
-      
-      if (leafletMap.current && pools && pools.length > 0) {
-        // Create marker icons (defined once)
-        const createRealPoolIcon = () => L.divIcon({
-          className: 'pool-marker',
-          iconSize: [20, 20],
-          html: `<div style="width:100%;height:100%;border-radius:50%;background-color:${COLORS.neonPink};box-shadow:0 0 10px ${COLORS.neonPink}, 0 0 20px ${COLORS.neonPink};"></div>`
-        });
-        
-        const createTestPoolIcon = () => L.divIcon({
-          className: 'pool-marker',
-          iconSize: [20, 20],
-          html: `<div style="width:100%;height:100%;border-radius:50%;background-color:${COLORS.neonBlue};box-shadow:0 0 10px ${COLORS.neonBlue}, 0 0 20px ${COLORS.neonBlue};"></div>`
-        });
-        
-        // Track which pools are currently on the map for cleanup
-        const currentPoolIds = new Set<number>();
-        
-        // Update existing or add new markers
-        pools.forEach(pool => {
-          if (!leafletMap.current) return;
-          
-          try {
-            currentPoolIds.add(pool.id);
-            const isTestPool = 'testData' in pool && pool.testData !== null;
-            const poolIcon = isTestPool ? createTestPoolIcon() : createRealPoolIcon();
-            const popupColor = isTestPool ? COLORS.neonBlue : COLORS.neonPink;
-            
-            // Check if marker already exists
-            if (markers.current[pool.id]) {
-              // Just update the marker position if needed
-              const existingMarker = markers.current[pool.id];
-              const currentLatLng = existingMarker.getLatLng();
-              
-              // Only update if position changed
-              if (currentLatLng.lat !== pool.latitude || currentLatLng.lng !== pool.longitude) {
-                existingMarker.setLatLng([pool.latitude, pool.longitude]);
-              }
-              
-              // Update popup content
-              existingMarker.unbindPopup();
-              existingMarker.bindPopup(`
-                <div style="text-align: center;">
-                  <div style="font-weight: bold; color: ${popupColor};">${pool.name}</div>
-                  <div style="color: white; font-size: 12px;">${pool.city}, ${pool.country}</div>
-                </div>
-              `, {
-                className: 'custom-popup',
-                closeButton: true,
-                autoClose: false,
-                closeOnEscapeKey: true
-              });
-            } else {
-              // Create new marker if it doesn't exist
-              const marker = L.marker([pool.latitude, pool.longitude], { 
-                icon: poolIcon,
-                title: pool.name
-              }).addTo(leafletMap.current);
-              
-              marker.on('click', () => {
-                console.log("Marker clicked:", pool.name);
-                onSelectPool(pool);
-                
-                // Center and zoom to marker
-                leafletMap.current?.setView([pool.latitude, pool.longitude], 5, {
-                  animate: true,
-                  duration: 1
-                });
-              });
-              
-              // Add popup to new marker
-              marker.bindPopup(`
-                <div style="text-align: center;">
-                  <div style="font-weight: bold; color: ${popupColor};">${pool.name}</div>
-                  <div style="color: white; font-size: 12px;">${pool.city}, ${pool.country}</div>
-                </div>
-              `, {
-                className: 'custom-popup',
-                closeButton: true,
-                autoClose: false,
-                closeOnEscapeKey: true
-              });
-              
-              markers.current[pool.id] = marker;
-            }
-          } catch (error) {
-            console.error("Error updating marker for pool:", pool.name, error);
-          }
-        });
-        
-        // Remove markers that are no longer in the pools data
-        Object.keys(markers.current).forEach(id => {
-          const poolId = parseInt(id);
-          if (!currentPoolIds.has(poolId) && leafletMap.current) {
-            leafletMap.current.removeLayer(markers.current[poolId]);
-            delete markers.current[poolId];
-          }
-        });
-      }
-    };
-    
-    // Update markers with a slight delay to ensure map is initialized
-    const timerId = setTimeout(updateMarkers, 1000);
-    
-    return () => clearTimeout(timerId);
-  }, [pools, onSelectPool]);
-
-  // Update map view when a pool is selected and open its popup
-  useEffect(() => {
-    if (leafletMap.current && selectedPool) {
-      // Track whether the animation is complete
-      let animationComplete = false;
-      
-      // Close any existing popups
-      leafletMap.current.closePopup();
-      
-      // Get the marker for the selected pool
-      const marker = markers.current[selectedPool.id];
-      if (!marker) return;
-      
-      // Define a function to handle popup opening to ensure consistent behavior
-      const openPopupSafely = () => {
-        if (!leafletMap.current || !marker) return;
-        
-        try {
-          // Unbind the current popup
-          marker.unbindPopup();
-          
-          // Create a new popup with the same content
-          const isTestPool = 'testData' in selectedPool && selectedPool.testData !== null;
-          const popupColor = isTestPool ? COLORS.neonBlue : COLORS.neonPink;
-          
-          // Rebind the popup with same content
-          marker.bindPopup(`
-            <div style="text-align: center;">
-              <div style="font-weight: bold; color: ${popupColor};">${selectedPool.name}</div>
-              <div style="color: white; font-size: 12px;">${selectedPool.city}, ${selectedPool.country}</div>
-            </div>
-          `, {
-            className: 'custom-popup',
-            closeButton: true,
-            autoClose: false,    // Prevent auto-closing when clicking elsewhere
-            closeOnEscapeKey: true
-          });
-          
-          // Open the popup
-          marker.openPopup();
-        } catch (error) {
-          console.error("Error opening popup:", error);
-        }
-      };
-      
-      // Center the map on the selected pool
-      leafletMap.current.once('moveend', () => {
-        animationComplete = true;
-        // Open popup after animation has completed
-        openPopupSafely();
-      });
-      
-      // Start the map panning
-      leafletMap.current.setView(
-        [selectedPool.latitude, selectedPool.longitude], 
-        5, 
-        { animate: true, duration: 0.5 }
-      );
-      
-      // Fallback to ensure popup opens even if moveend doesn't fire
-      setTimeout(() => {
-        if (!animationComplete) {
-          openPopupSafely();
-        }
-      }, 600);
+    if (selectedPool) {
+      setPopupPoolId(selectedPool.id);
     }
   }, [selectedPool]);
 
@@ -311,12 +52,10 @@ export default function MapVisualization({
     );
   }
 
-  return (
-    <div className="map-container dark-map-bg">
-      <div id="map" ref={mapRef} className="dark-map-bg"></div>
-      
+  return(
+    <>
       {/* Legend */}
-      <div className="absolute bottom-5 left-5 z-30 bg-black bg-opacity-70 backdrop-blur-sm p-3 rounded-lg border-glow-blue text-xs font-jetbrains hidden md:block">
+      <div className="absolute bottom-10 left-5 z-30 bg-black bg-opacity-70 backdrop-blur-sm p-3 rounded-lg border-glow-blue text-xs font-jetbrains hidden md:block">
         <h3 className="mb-2 uppercase tracking-wider font-semibold" style={{ color: COLORS.neonBlue }}>Map Legend</h3>
         <div className="grid grid-cols-1 gap-1">
           <div className="flex items-center">
@@ -331,6 +70,92 @@ export default function MapVisualization({
           </div>
         </div>
       </div>
-    </div>
+      <Map
+        ref={mapRef}
+        mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+        initialViewState={{
+          longitude: -95.7129, // Center of US
+          latitude: 37.0902,
+          zoom: 3
+        }}
+        projection="mercator"
+        style={{width: '100%', height: '100%'}}
+        // mapStyle="mapbox://styles/mapbox/dark-v11"
+        mapStyle="mapbox://styles/funwithmapping/cmauj4mcu00lp01r2a1ksa01j"
+      >
+        {pools && pools.map(pool => {
+          // Debug: log coordinates for each marker
+          console.log(`Marker for ${pool.name}: lat=${pool.latitude}, lng=${pool.longitude}`);
+          
+          // Ensure coordinates are numbers
+          const latitude = Number(pool.latitude);
+          const longitude = Number(pool.longitude);
+          
+          // Validate coordinates
+          if (isNaN(latitude) || isNaN(longitude)) {
+            console.error(`Invalid coordinates for ${pool.name}: lat=${pool.latitude}, lng=${pool.longitude}`);
+            return null;
+          }
+          
+          const isTestPool = 'testData' in pool && pool.testData !== null;
+          const markerColor = isTestPool ? COLORS.neonBlue : COLORS.neonPink;
+          const popupColor = markerColor;
+          
+          return (
+            <Marker
+              key={pool.id}
+              longitude={longitude}
+              latitude={latitude}
+              anchor="center"
+              onClick={e => {
+                e.originalEvent.stopPropagation();
+                setPopupPoolId(pool.id);
+                onSelectPool(pool);
+                // Center the map on this marker
+                if (mapRef.current) {
+                  const currentZoom = mapRef.current.getZoom();
+                  mapRef.current.flyTo({
+                    center: [longitude, latitude],
+                    zoom: currentZoom,
+                    duration: 1000
+                  });
+                }
+              }}
+            >
+              <div
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: '50%',
+                  backgroundColor: markerColor,
+                  boxShadow: `0 0 10px ${markerColor}, 0 0 20px ${markerColor}`,
+                  border: '2px solid #222',
+                  cursor: 'pointer',
+                }}
+                title={pool.name}
+              />
+              {popupPoolId === pool.id && (
+                <Popup
+                  longitude={longitude}
+                  latitude={latitude}
+                  anchor="top"
+                  closeButton={true}
+                  closeOnClick={false}
+                  onClose={() => setPopupPoolId(null)}
+                  focusAfterOpen={false}
+                  style={{ zIndex: 1000 }}
+                  className=""
+                >
+                  <div className="text-center px-6 py-1">
+                    <h3 className="text-[16px] font-semibold">{pool.name}</h3>
+                    <p className="">{pool.city}, {pool.country}</p>
+                  </div>
+                </Popup>
+              )}
+            </Marker>
+          );
+        })}
+      </Map>
+    </>
   );
 }
