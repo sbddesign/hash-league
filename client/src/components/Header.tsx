@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { useBlockHeight } from '@/hooks/use-block-height';
 import { Compass, Volume2 } from 'lucide-react';
-import laserSound from '../assets/laser.mp3';
+import { playLaserSound } from '@/components/sound-utils';
 
 interface HeaderProps {
   globalHashrate: string;
@@ -14,11 +14,7 @@ export default function Header({ globalHashrate, activePools }: HeaderProps) {
   
   // Test sound function
   const playTestSound = () => {
-    const audio = new Audio(laserSound);
-    audio.volume = 0.5;
-    audio.play().catch(err => {
-      console.error("Error playing test sound:", err);
-    });
+    playLaserSound(0.5);
   };
   
   return (

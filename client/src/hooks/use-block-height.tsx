@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
-// Import the sound directly as a module
-import laserSound from '../assets/laser.mp3';
+import { playLaserSound } from '@/components/sound-utils';
 
 interface UseBlockHeightResult {
   currentBlockHeight: number | null;
@@ -16,14 +15,7 @@ export function useBlockHeight(): UseBlockHeightResult {
   const previousHeightRef = useRef<number | null>(null);
   const { toast } = useToast();
   
-  // Audio setup for block notification
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  
   useEffect(() => {
-    // Initialize audio with imported sound
-    audioRef.current = new Audio(laserSound);
-    audioRef.current.volume = 0.3;
-    
     // Function to fetch the current block height
     const fetchBlockHeight = async () => {
       try {
@@ -46,12 +38,8 @@ export function useBlockHeight(): UseBlockHeightResult {
               duration: 5000,
             });
             
-            // Play sound effect
-            if (audioRef.current) {
-              audioRef.current.play().catch(e => {
-                console.error("Error playing sound:", e);
-              });
-            }
+            // Play sound effect using the sound utility
+            playLaserSound(0.3);
           }
           
           // Update state and ref
