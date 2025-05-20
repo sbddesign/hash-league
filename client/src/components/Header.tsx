@@ -1,4 +1,6 @@
 import { FC } from 'react';
+import { useBlockHeight } from '@/hooks/use-block-height';
+import { Compass } from 'lucide-react';
 
 interface HeaderProps {
   globalHashrate: string;
@@ -6,6 +8,9 @@ interface HeaderProps {
 }
 
 export default function Header({ globalHashrate, activePools }: HeaderProps) {
+  // Use our custom hook to track block height
+  const { currentBlockHeight, isLoading } = useBlockHeight();
+  
   return (
     <header className="fixed top-0 left-0 right-0 z-30 bg-black bg-opacity-70 backdrop-blur-sm border-b border-[#00f3ff] px-4 py-3 flex justify-between items-center">
       <div className="flex items-center">
@@ -21,7 +26,10 @@ export default function Header({ globalHashrate, activePools }: HeaderProps) {
             <i className="mr-2">⚡</i>Global Hashrate: <span className="font-bold">{globalHashrate}</span>
           </div>
           <div className="px-3 py-1.5 rounded bg-black bg-opacity-50 border border-[#ff00ea] text-[#ff00ea]">
-            <span className="mr-2">👥</span>Active Pools: <span className="font-bold">{activePools}</span>
+            <Compass className="inline-block mr-2 h-4 w-4" />
+            Current Blockheight: <span className="font-bold">
+              {isLoading ? '...' : currentBlockHeight?.toLocaleString()}
+            </span>
           </div>
         </div>
       </div>

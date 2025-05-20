@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import Header from '@/components/Header';
+import { Toaster } from '@/components/ui/toaster';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -27,6 +28,9 @@ export default function AppLayout({
       <main className="relative w-full h-screen overflow-hidden">
         {children}
       </main>
+      
+      {/* Toast notifications */}
+      <Toaster />
     </div>
   );
 }
