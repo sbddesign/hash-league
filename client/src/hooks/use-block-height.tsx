@@ -20,7 +20,7 @@ export function useBlockHeight(): UseBlockHeightResult {
   useEffect(() => {
     // Initialize audio
     audioRef.current = new Audio('/sounds/laser.mp3');
-    audioRef.current.volume = 0.5;
+    audioRef.current.volume = 0.3;
     
     // Function to fetch the current block height
     const fetchBlockHeight = async () => {

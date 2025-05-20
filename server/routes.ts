@@ -1,5 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import express from "express";
+import path from "path";
 import { storage } from "./storage";
 import fetch from "node-fetch";
 
@@ -15,6 +17,8 @@ const simpleFetch = async (url: string) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Serve static files from the public directory
+  app.use('/sounds', express.static(path.join(process.cwd(), 'public/sounds')));
   // API routes for mining pools
   app.get("/api/mining-pools", async (req, res) => {
     try {
