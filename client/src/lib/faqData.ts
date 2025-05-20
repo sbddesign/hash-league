@@ -59,7 +59,7 @@ Use fresh Bitcoin addresses (preferably with coin control and mixing via tools l
 
 Solo mining using a hydra pool instance to win a full reward
 PPLNS is another non-custodial solution limited to a number of miners that can participate in the pool. Payout is sent directly to the coinbase (similar to Ocean pool mining if you are familiar)
-There is a P2P pool that does payouts on a coinbase using atomic swaps over lightning refer Blog for more information`,
+There is a P2P pool that does payouts on a coinbase using atomic swaps over lightning .`,
   },
   {
     question:
