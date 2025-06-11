@@ -204,26 +204,25 @@ export class MemStorage implements IStorage {
         isActive: true,
         poolApiUrl: "http://miami.pool.atlbitlab.com:3334",
       },
-    ];
-
-    // Test mining pools with static data
-    const testPools: InsertMiningPool[] = [
       {
-        name: "Austin Community",
+        name: "Austin PlebPool",
         country: "United States",
         city: "Austin",
         latitude: 30.2672,
         longitude: -97.7431,
-        description: "Where's Austin's hashrate?",
-        avatar: "/bitcoin-orange.png",
+        description:
+          "PlebPool - This ones for the Plebs. Running Knots and punching spam in the nuts!",
+        avatar: "https://plebpool.com/assets/layout/images/logo.svg",
+        website: "https://plebpool.com",
+        twitter: "https://x.com/PlebLab",
         createdAt: "2024-10-01 00:00:00",
         isActive: true,
-        testData: {
-          hashrate: "0 MH/s",
-          workers: 0,
-          hashHistory: [5, 4, 3, 2, 1, 0, 0],
-        },
+        poolApiUrl: "https://api.plebpool.com",
       },
+    ];
+
+    // Test mining pools with static data
+    const testPools: InsertMiningPool[] = [
       {
         name: "Nashville Community",
         country: "United States",
